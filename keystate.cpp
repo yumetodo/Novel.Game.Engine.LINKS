@@ -10,11 +10,11 @@
 #ifdef max
 #undef max
 #endif
-keystate::keystate() NOEXCEPT : keystatebuf() {
+keystate::keystate() noexcept : keystatebuf() {
 	this->fllush_stream();
 }
 
-bool keystate::update() NOEXCEPT {
+bool keystate::update() noexcept {
 	char buf[keybufsize];
 	auto re = GetHitKeyStateAll(buf);
 	if (0 != re) return false;
@@ -25,12 +25,12 @@ bool keystate::update() NOEXCEPT {
 	return true;
 }
 
-bool keystate::fllush() {
+bool keystate::fllush() noexcept {
 	if(this->fllush_stream()) return false;
 	this->keystatebuf.fill(0);
 	return true;
 }
-bool keystate::fllush_stream() {
+bool keystate::fllush_stream() noexcept {
 	char buf[2][keybufsize] = {};
 	for (size_t i = 0; i < this->keystatebuf.size(); ++i) buf[0][i] = 0 != this->keystatebuf[i];
 	char* first_p;
@@ -43,50 +43,50 @@ bool keystate::fllush_stream() {
 	return false;
 }
 
-int keystate::operator[](size_t n) const NOEXCEPT {
+int keystate::operator[](size_t n) const noexcept {
 	return this->keystatebuf[n];
 }
 
 int keystate::at(size_t n) const {
 	return this->keystatebuf.at(n);
 }
-bool keystate::shift() const NOEXCEPT {
+bool keystate::shift() const noexcept {
 	return this->lshift() || this->rshift();
 }
-bool keystate::lshift() const NOEXCEPT {
+bool keystate::lshift() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_LSHIFT];
 }
-bool keystate::rshift() const NOEXCEPT {
+bool keystate::rshift() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_RSHIFT];
 }
-bool keystate::ctrl() const NOEXCEPT {
+bool keystate::ctrl() const noexcept {
 	return this->lctrl() || this->rctrl();
 }
-bool keystate::lctrl() const NOEXCEPT {
+bool keystate::lctrl() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_LCONTROL];
 }
-bool keystate::rctrl() const NOEXCEPT {
+bool keystate::rctrl() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_RCONTROL];
 }
-bool keystate::esc() const NOEXCEPT {
+bool keystate::esc() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_ESCAPE];
 }
-bool keystate::right() const NOEXCEPT {
+bool keystate::right() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_RIGHT];
 }
-bool keystate::up() const NOEXCEPT {
+bool keystate::up() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_UP];
 }
-bool keystate::left() const NOEXCEPT {
+bool keystate::left() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_LEFT];
 }
-bool keystate::down() const NOEXCEPT {
+bool keystate::down() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_DOWN];
 }
-bool keystate::enter() const NOEXCEPT {
+bool keystate::enter() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_RETURN];
 }
-bool keystate::space() const NOEXCEPT {
+bool keystate::space() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_SPACE];
 }
 bool operator!=(const keystate& l, size_t r) {

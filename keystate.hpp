@@ -1,48 +1,43 @@
 ﻿#pragma once
 #include <array>
-#ifndef DISABLE_DxHANDLE_WRAP_USE_EXCEPTION
-#define DxHANDLE_WRAP_USE_EXCEPTION//throwする
-#endif
-#include "util_noexcept.h"
-#include "dxlibex/config/defines.h"
 
 class keystate
 {
 public:
-	keystate() NOEXCEPT;
+	keystate() noexcept;
 	keystate(const keystate&) = delete;
 	keystate(keystate&&) = delete;
 	keystate& operator=(const keystate&) = delete;
 	keystate& operator=(keystate&&) = delete;
-	bool update() NOEXCEPT;
-	bool fllush();
-	int operator[](size_t n) const NOEXCEPT;
-	int at(size_t n) const;
-	bool shift() const NOEXCEPT;
-	bool lshift() const NOEXCEPT;
-	bool rshift() const NOEXCEPT;
-	bool ctrl() const NOEXCEPT;
-	bool lctrl() const NOEXCEPT;
-	bool rctrl() const NOEXCEPT;
-	bool esc() const NOEXCEPT;
-	bool right() const NOEXCEPT;
-	bool up() const NOEXCEPT;
-	bool left() const NOEXCEPT;
-	bool down() const NOEXCEPT;
-	bool enter() const NOEXCEPT;
-	bool space() const NOEXCEPT;
-	DXLE_STATIC_CONSTEXPR size_t keybufsize = 256;
+	bool update() noexcept;
+	bool fllush() noexcept;
+	int operator[](std::size_t n) const noexcept;
+	int at(std::size_t n) const;
+	bool shift() const noexcept;
+	bool lshift() const noexcept;
+	bool rshift() const noexcept;
+	bool ctrl() const noexcept;
+	bool lctrl() const noexcept;
+	bool rctrl() const noexcept;
+	bool esc() const noexcept;
+	bool right() const noexcept;
+	bool up() const noexcept;
+	bool left() const noexcept;
+	bool down() const noexcept;
+	bool enter() const noexcept;
+	bool space() const noexcept;
+	static constexpr std::size_t keybufsize = 256;
 private:
-	bool fllush_stream();
+	bool fllush_stream() noexcept;
 	std::array<int, 256> keystatebuf;
 };
-bool operator!=(const keystate& l, size_t r);
-inline bool operator!=(size_t l, const keystate& r) {
+bool operator!=(const keystate& l, std::size_t r);
+inline bool operator!=(std::size_t l, const keystate& r) {
 	return r != l;
 }
-inline bool operator==(const keystate& l, size_t r) {
+inline bool operator==(const keystate& l, std::size_t r) {
 	return !(l != r);
 }
-inline bool operator==(size_t l, const keystate& r) {
+inline bool operator==(std::size_t l, const keystate& r) {
 	return !(l != r);
 }

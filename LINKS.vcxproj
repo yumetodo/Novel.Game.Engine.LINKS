@@ -23,6 +23,7 @@
     <ClCompile Include="back_log.cpp" />
     <ClCompile Include="fmt\fmt\format.cc" />
     <ClCompile Include="GAME.cpp" />
+    <ClCompile Include="keystate.cpp" />
     <ClCompile Include="LINKSMAIN.cpp" />
     <ClCompile Include="resource_manager.cpp" />
     <ClCompile Include="save.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="DEF.h" />
     <ClInclude Include="fmt\fmt\format.h" />
     <ClInclude Include="GAME.h" />
+    <ClInclude Include="keystate.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource_manager.hpp" />
     <ClInclude Include="save.hpp" />
