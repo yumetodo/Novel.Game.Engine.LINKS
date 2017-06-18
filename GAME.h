@@ -9,6 +9,7 @@
 #include <Windows.h>
 #include "DEF.h"
 #include "utility.hpp"
+#include "keystate.hpp"
 #include <cstdint>
 
 //既読スキップ
@@ -81,7 +82,6 @@ extern SkipData_t TextIgnoredFlags;
 extern ConfigData_t ConfigData;
 
 //キー操作
-extern int Key[256];
 extern int TitleMenuPosY;
 extern int GAME_y;
 
@@ -90,9 +90,6 @@ void MATERIAL_LOAD();
 
 //スクリプト読込関数
 int SCRIPT_READ();
-
-//矢印キー操作関数
-int MoveKey(int (&KeyStateBuf)[256]);
 
 //タイトルメニューカーソル関数
 void title(unsigned int color, int y);
@@ -119,34 +116,31 @@ int QUICKSAVE_LOAD();
 int CONTINUE_LOAD();
 
 //セーブ・ロード・スキップ・オート他 ゲームメニュー
-int GAMEMENU();
-
-//選択肢機能
-void sentakusi(int Cr, int y);
+int GAMEMENU(KeyState& key);
 
 // 改行関数
 int Kaigyou();
 
 //スクリプトタグ処理関数
-int SCRIPT_OUTPUT();
+int SCRIPT_OUTPUT(KeyState& key);
 
 //終了ウインドウ
-int GAME_FINISH();
+int GAME_FINISH(KeyState& key);
 
 //初期化
 int FORMAT();
 
 //スクリーンショット機能
-int SCREENSHOT();
+int SCREENSHOT(KeyState& key);
 
 //マウス操作
 int Mouse_Move();
 
 //コンフィグ(タイトル画面)
-void CONFIG();
+void CONFIG(KeyState& key);
 
 //各種F1～F11キー
-void SHORTCUT_KEY();
+void SHORTCUT_KEY(KeyState& key);
 
 //各処理後のゲーム画面の描画(サウンドノベル風)
 void SOUNDNOVEL() noexcept;

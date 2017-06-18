@@ -6,6 +6,7 @@
 #include "back_log.hpp"
 #include "DEF.h"
 #include "utility.hpp"
+#include "keystate.hpp"
 #include <DxLib.h>
 #include "fmt/fmt/format.h"
 #include "GAME.h"
@@ -20,17 +21,16 @@ namespace {
 	}
 
 	//バックログ(キー操作関連)
-	void BACKLOG_KEY_MOVE() noexcept {
-
+	void BACKLOG_KEY_MOVE(KeyState& key) noexcept {
+		key.update();
 		//バックログ（キー操作関連）
-		if (LOG != 10 && CheckHitKey(KEY_INPUT_UP) == 1 || LOG != 10 && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
+		if (LOG != 10 && key.up() || LOG != 10 && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
 			LOG++;
-			WaitTimer(300);
+			key.flush();
 		}
-
-		if (LOG != 1 && CheckHitKey(KEY_INPUT_DOWN) == 1 || LOG != 1 && (GetMouseInput() & MOUSE_INPUT_RIGHT) != 0) {
+		if (LOG != 1 && key.down() || LOG != 1 && (GetMouseInput() & MOUSE_INPUT_RIGHT) != 0) {
 			LOG--;
-			WaitTimer(300);
+			key.flush();
 		}
 	}
 
@@ -52,7 +52,7 @@ namespace {
 	}
 }
 //バックログ参照
-void BACKLOG_DRAW() noexcept {
+void BACKLOG_DRAW(KeyState& key) noexcept {
 	//バックログ参照メッセージ
 	if (backLogMessage() == IDYES) {
 
@@ -63,7 +63,7 @@ void BACKLOG_DRAW() noexcept {
 		while (ProcessMessage() == 0) {
 
 			//バックログ（キー操作関連）
-			BACKLOG_KEY_MOVE();
+			BACKLOG_KEY_MOVE(key);
 
 			//バックログの描画関数
 			BACKLOG_SCREENSHOT_DRAW();
@@ -72,13 +72,13 @@ void BACKLOG_DRAW() noexcept {
 			SCREEN_CLEAR();
 
 			//終了処理
-			if (CheckHitKey(KEY_INPUT_RETURN) == 1 || (GetMouseInput() & MOUSE_INPUT_RIGHT) != 0 && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-
+			key.update();
+			if (key.enter() || (GetMouseInput() & MOUSE_INPUT_RIGHT) != 0 && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
 				ClearDrawScreen();
 
 				DeleteGraph(BACKLOG[0]);
 
-				WaitTimer(300);
+				key.flush();
 
 				//ショートカットキー時の事後処理
 				SHORTCUT_KEY_DRAW();

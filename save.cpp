@@ -7,8 +7,11 @@
 #include "DEF.h"
 #include "utility.hpp"
 #include "resource_manager.hpp"
+#include "keystate.hpp"
 #include "GAME.h"
 #include <DxLib.h>
+#include <chrono>
+#include <thread>
 
 int SAVE_CHOICE = 0;
 static int SAVESNAP1, SAVESNAP2, SAVESNAP3, SAVETITLE;
@@ -151,13 +154,13 @@ namespace {
 	}
 
 	//セーブ画面(キー操作)
-	void SAVEDATA_KEY_MOVE() {
+	void SAVEDATA_KEY_MOVE(const KeyState& key) {
 
-		if (Key[KEY_INPUT_DOWN] == 1) {
+		if (key.down()) {
 			SAVE_y = (SAVE_y == (save_buttom_y)) ? save_base_pos_y : SAVE_y + save_move_unit;
 		}
 
-		if (Key[KEY_INPUT_UP] == 1) {
+		if (key.up()) {
 			SAVE_y = (save_base_pos_y == SAVE_y) ? save_buttom_y : SAVE_y - save_move_unit;
 		}
 	}
@@ -169,10 +172,10 @@ namespace {
 	}
 
 	//セーブデータ・セーブ画面ループ
-	void SAVEDATA_SAVE_LOOP() {
+	void SAVEDATA_SAVE_LOOP(KeyState& key) {
 
 		//セーブデータ・セーブ画面ループ
-		while (ProcessMessage() == 0 && MoveKey(Key) == 0 && false == GAMEMENU_COUNT) {
+		while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
@@ -187,52 +190,48 @@ namespace {
 			Mouse_Move();
 
 			//キー操作関連
-			SAVEDATA_KEY_MOVE();
+			SAVEDATA_KEY_MOVE(key);
 
 			//画面クリア処理
 			SCREEN_CLEAR();
 
 			//セーブデータ１にセーブ
-			if (SAVE_y == save_base_pos_y && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == save_base_pos_y && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-
+			if (SAVE_y == save_base_pos_y && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ１にセーブ
 				SAVEDATA_1_SAVE();
-				WaitTimer(300);
+				key.flush_update();
 			}
 
 			//セーブデータ２にセーブ
-			if (SAVE_y == (save_base_pos_y * 2) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 2) && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-
+			if (SAVE_y == (save_base_pos_y * 2) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ２にセーブ
 				SAVEDATA_2_SAVE();
-				WaitTimer(300);
+				key.flush_update();
 			}
 
 			//セーブデータ３にセーブ
-			if (SAVE_y == (save_base_pos_y * 3) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 3) && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-
+			if (SAVE_y == (save_base_pos_y * 3) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ３にセーブ
 				SAVEDATA_3_SAVE();
-				WaitTimer(300);
+				key.flush_update();
 			}
 
 			//画面に戻る
-			if (SAVE_y == (save_base_pos_y * 4) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 4) && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-				if (IDYES == MessageBoxYesNo("戻りますか？")) {
-
+			if (SAVE_y == (save_base_pos_y * 4) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+				const auto choice = MessageBoxYesNo("戻りますか？");
+				key.flush_update();
+				if (IDYES == choice) {
 					ClearDrawScreen();
-
 					//ショートカットキー時の事後処理
 					SHORTCUT_KEY_DRAW();
 					break;
 				}
-				WaitTimer(300);
 			}
 		}
 	}
 }
 //セーブデータセーブ関数
-void SAVEDATA_SAVE() {
+void SAVEDATA_SAVE(KeyState& key) {
 	if (IDYES == MessageBoxYesNo("セーブ画面に移行しますか？")) {
 		ClearDrawScreen();
 		SAVE_y = save_base_pos_y;
@@ -241,7 +240,7 @@ void SAVEDATA_SAVE() {
 		SAVEDATA_SCREENSHOT_READ();
 
 		//セーブデータ・セーブ画面ループ
-		SAVEDATA_SAVE_LOOP();
+		SAVEDATA_SAVE_LOOP(key);
 	}
 }
 
@@ -322,9 +321,9 @@ namespace {
 	}
 
 	//セーブデータ・ロード画面ループ
-	void SAVEDATA_LOAD_LOOP() {
+	void SAVEDATA_LOAD_LOOP(KeyState& key) {
 
-		while (ProcessMessage() == 0 && MoveKey(Key) == 0 && false == GAMEMENU_COUNT) {
+		while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
@@ -339,53 +338,46 @@ namespace {
 			Mouse_Move();
 
 			//セーブ画面(キー操作)
-			SAVEDATA_KEY_MOVE();
+			SAVEDATA_KEY_MOVE(key);
 
 			//画面クリア処理
 			SCREEN_CLEAR();
 
 			//セーブデータ１のロード
-			if (SAVE_y == save_base_pos_y && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == save_base_pos_y && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
-
+			if (SAVE_y == save_base_pos_y && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 				//セーブデータ１をロード
 				SAVEDATA_1_LOAD();
-				WaitTimer(300);
+				key.flush();
 			}
-
 			//セーブデータ２のロード
-			if (SAVE_y == (save_base_pos_y * 2) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 2) && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
-
+			if (SAVE_y == (save_base_pos_y * 2) && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 				//セーブデータ2をロード
 				SAVEDATA_2_LOAD();
-				WaitTimer(300);
+				key.flush();
 			}
-
 			//セーブデータ３のロード
-			if (SAVE_y == (save_base_pos_y * 3) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 3) && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
-
+			if (SAVE_y == (save_base_pos_y * 3) && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 				//セーブデータ2をロード
 				SAVEDATA_3_LOAD();
-				WaitTimer(300);
+				key.flush();
 			}
-
 			//戻る
-			if (SAVE_y == (save_base_pos_y * 4) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 4) && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
-				if (IDYES == MessageBoxYesNo("戻りますか？")) {
-
+			if (SAVE_y == (save_base_pos_y * 4) && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
+				const auto choice = MessageBoxYesNo("戻りますか？");
+				key.flush();
+				if (IDYES == choice) {
 					ClearDrawScreen();
-
 					//ショートカットキー時の事後処理
 					SHORTCUT_KEY_DRAW();
 					break;
 				}
-				WaitTimer(300);
 			}
 		}
 	}
 }
 
 //セーブデータロード関数
-int SAVEDATA_LOAD() {
+int SAVEDATA_LOAD(KeyState& key) {
 	if (IDYES == MessageBoxYesNo("ロード画面に移行しますか？")) {
 
 		ClearDrawScreen();
@@ -395,7 +387,7 @@ int SAVEDATA_LOAD() {
 		SAVEDATA_SCREENSHOT_READ();
 
 		//セーブデータ・ロード画面ループ
-		SAVEDATA_LOAD_LOOP();
+		SAVEDATA_LOAD_LOOP(key);
 	}
 	return 0;
 }
@@ -454,9 +446,9 @@ namespace {
 	}
 
 	//セーブデータ削除画面ループ
-	void SAVEDATA_DELETE_LOOP() {
+	void SAVEDATA_DELETE_LOOP(KeyState& key) {
 
-		while (ProcessMessage() == 0 && MoveKey(Key) == 0 && false == GAMEMENU_COUNT) {
+		while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
@@ -471,50 +463,46 @@ namespace {
 			Mouse_Move();
 
 			//キー操作関連
-			SAVEDATA_KEY_MOVE();
+			SAVEDATA_KEY_MOVE(key);
 
 			//画面クリア処理
 			SCREEN_CLEAR();
 
-			if (SAVE_y == save_base_pos_y && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == save_base_pos_y && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-
+			if (SAVE_y == save_base_pos_y && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ1削除処理
 				SAVEDATA_1_DELETE();
-				WaitTimer(300);
+				key.flush();
 			}
-
-			if (SAVE_y == (save_base_pos_y * 2) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 2) && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-
+			if (SAVE_y == (save_base_pos_y * 2) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ2削除処理
 				SAVEDATA_2_DELETE();
-				WaitTimer(300);
+				key.flush();
 			}
-
-			if (SAVE_y == (save_base_pos_y * 3) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 3) && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-
+			if (SAVE_y == (save_base_pos_y * 3) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ3削除処理
 				SAVEDATA_3_DELETE();
-				WaitTimer(300);
+				key.flush();
 			}
-
-			if (SAVE_y == (save_base_pos_y * 4) && CheckHitKey(KEY_INPUT_RETURN) == 1 || SAVE_y == (save_base_pos_y * 4) && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
-				if (IDYES == MessageBoxYesNo("戻りますか？")) {
-
+			if (SAVE_y == (save_base_pos_y * 4) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+				const auto choice = MessageBoxYesNo("戻りますか？");
+				using namespace std::chrono_literals;
+				const auto t = std::chrono::high_resolution_clock::now();
+				key.flush();
+				if (IDYES == choice) {
 					ClearDrawScreen();
-
 					//ショートカットキー時の事後処理
 					SHORTCUT_KEY_DRAW();
-					WaitTimer(300);//キー判定消去待ち目的ではない
+					//キー判定消去待ち目的ではない
+					std::this_thread::sleep_until(t + 300ms);
 					break;
 				}
-				WaitTimer(300);
 			}
 		}
 	}
 }
 
 //セーブデータ削除処理
-void SAVEDATA_DELETE() {
+void SAVEDATA_DELETE(KeyState& key) {
 	if (IDYES == MessageBoxYesNo("セーブデータ削除画面に移行しますか？")) {
 
 		ClearDrawScreen();
@@ -524,7 +512,7 @@ void SAVEDATA_DELETE() {
 		SAVEDATA_SCREENSHOT_READ();
 
 		//セーブデータ削除画面ループ
-		SAVEDATA_DELETE_LOOP();
+		SAVEDATA_DELETE_LOOP(key);
 	}
 }
 

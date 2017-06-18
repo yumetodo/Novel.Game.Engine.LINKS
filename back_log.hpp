@@ -5,8 +5,9 @@
 =============================================================================*/
 #ifndef LINKS_BACK_LOG_HPP_
 #define LINKS_BACK_LOG_HPP_
+#include "keystate.hpp"
 
-void BACKLOG_DRAW() noexcept;
+void BACKLOG_DRAW(KeyState& key) noexcept;
 void BACKLOG_GET() noexcept;
 void incrementBackLogCount() noexcept;
 

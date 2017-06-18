@@ -101,7 +101,7 @@ void AUTO_SKIP_STOP() noexcept {
 }
 
 //スクリプトタグ処理(クリック待ち)
-void SCRIPT_UTPUT_KEYWAIT() noexcept {
+void SCRIPT_UTPUT_KEYWAIT(const KeyState& key) noexcept {
 	//セーブデータ用スクリーンショット保存
 	SAVESNAP();
 	//スキップ・オート変数がＯＦＦの場合
@@ -109,7 +109,7 @@ void SCRIPT_UTPUT_KEYWAIT() noexcept {
 		// ボタン押し待ちおよび参照文字位置を一つ進める
 		DxLib::WaitKey();
 		//エンターキーで次へ
-		if (DxLib::CheckHitKey(KEY_INPUT_RETURN) == 1 || (DxLib::GetMouseInput() & MOUSE_INPUT_LEFT) == 1) {
+		if (key.enter() || (DxLib::GetMouseInput() & MOUSE_INPUT_LEFT) == 1) {
 			CP++;
 		}
 	}

@@ -7,12 +7,13 @@
 #define LINKS_SAVE_HPP_
 
 #include <cstdint>
+#include "keystate.hpp"
 
 extern int SAVE_CHOICE;
 
-void SAVEDATA_DELETE();
-int SAVEDATA_LOAD();
-void SAVEDATA_SAVE();
+void SAVEDATA_DELETE(KeyState& key);
+int SAVEDATA_LOAD(KeyState& key);
+void SAVEDATA_SAVE(KeyState& key);
 
 void SAVESNAP();
 
