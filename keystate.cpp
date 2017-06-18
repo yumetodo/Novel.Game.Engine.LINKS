@@ -10,9 +10,7 @@ struct IUnknown;
 #	endif
 #include "DxLib.h"
 #include <limits>
-keystate::keystate() noexcept : keystatebuf() {
-	this->fllush_stream();
-}
+keystate::keystate() noexcept : keystatebuf() {}
 
 bool keystate::update() noexcept {
 	char buf[keybufsize];
