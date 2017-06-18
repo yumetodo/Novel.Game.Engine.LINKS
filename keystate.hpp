@@ -1,16 +1,16 @@
 ﻿#pragma once
 #include <array>
 
-class keystate
+class KeyState
 {
 public:
-	keystate() noexcept;
-	keystate(const keystate&) = delete;
-	keystate(keystate&&) = delete;
-	keystate& operator=(const keystate&) = delete;
-	keystate& operator=(keystate&&) = delete;
+	KeyState() noexcept;
+	KeyState(const KeyState&) = delete;
+	KeyState(KeyState&&) = delete;
+	KeyState& operator=(const KeyState&) = delete;
+	KeyState& operator=(KeyState&&) = delete;
 	bool update() noexcept;
-	bool fllush() noexcept;
+	bool flush() noexcept;
 	int operator[](std::size_t n) const noexcept;
 	int at(std::size_t n) const;
 	bool shift() const noexcept;
@@ -28,16 +28,16 @@ public:
 	bool space() const noexcept;
 	static constexpr std::size_t keybufsize = 256;
 private:
-	bool fllush_stream() noexcept;
+	bool flush_stream() noexcept;
 	std::array<int, 256> keystatebuf;
 };
-bool operator!=(const keystate& l, std::size_t r);
-inline bool operator!=(std::size_t l, const keystate& r) {
+bool operator!=(const KeyState& l, std::size_t r);
+inline bool operator!=(std::size_t l, const KeyState& r) {
 	return r != l;
 }
-inline bool operator==(const keystate& l, std::size_t r) {
+inline bool operator==(const KeyState& l, std::size_t r) {
 	return !(l != r);
 }
-inline bool operator==(std::size_t l, const keystate& r) {
+inline bool operator==(std::size_t l, const KeyState& r) {
 	return !(l != r);
 }
