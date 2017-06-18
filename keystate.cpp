@@ -6,7 +6,7 @@
 //To avoid compile error
 //C:\Program Files (x86)\Windows Kits\8.1\Include\um\combaseapi.h(229,21): error : unknown type name 'IUnknown'
 //          static_cast<IUnknown*>(*pp);    // make sure everyone derives from IUnknown
-#		define CINTERFACE
+struct IUnknown;
 #	endif
 #include "DxLib.h"
 #include <limits>
