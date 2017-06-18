@@ -11,6 +11,7 @@ public:
 	KeyState& operator=(KeyState&&) = delete;
 	bool update() noexcept;
 	bool flush() noexcept;
+	bool flush_update() noexcept;
 	int operator[](std::size_t n) const noexcept;
 	int at(std::size_t n) const;
 	bool shift() const noexcept;
@@ -26,6 +27,7 @@ public:
 	bool down() const noexcept;
 	bool enter() const noexcept;
 	bool space() const noexcept;
+	bool backspace() const noexcept;
 	static constexpr std::size_t keybufsize = 256;
 private:
 	bool flush_stream() noexcept;

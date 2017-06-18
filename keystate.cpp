@@ -10,6 +10,9 @@ struct IUnknown;
 #	endif
 #include "DxLib.h"
 #include <limits>
+#include <chrono>
+#include <thread>
+
 KeyState::KeyState() noexcept : keystatebuf() {}
 
 bool KeyState::update() noexcept {
@@ -28,15 +31,21 @@ bool KeyState::flush() noexcept {
 	this->keystatebuf.fill(0);
 	return true;
 }
+bool KeyState::flush_update() noexcept
+{
+	return this->flush() && this->update();
+}
 bool KeyState::flush_stream() noexcept {
+	using namespace std::chrono_literals;
 	char buf[2][keybufsize] = {};
 	for (size_t i = 0; i < this->keystatebuf.size(); ++i) buf[0][i] = 0 != this->keystatebuf[i];
 	char* first_p;
 	char* last_p;
 	size_t i;
-	for (first_p = buf[0], last_p = buf[1]; 0 == DxLib::GetHitKeyStateAll(last_p); std::swap(first_p, last_p)) {
+	for (first_p = buf[0], last_p = buf[1]; 0 == ProcessMessage() && 0 == DxLib::GetHitKeyStateAll(last_p); std::swap(first_p, last_p)) {
 		for (i = 0; i < keybufsize && !first_p[i] && !last_p[i]; ++i);
 		if (i == keybufsize) return true;
+		std::this_thread::sleep_for(2ms);
 	}
 	return false;
 }
@@ -86,6 +95,9 @@ bool KeyState::enter() const noexcept {
 }
 bool KeyState::space() const noexcept {
 	return 0 != this->keystatebuf[KEY_INPUT_SPACE];
+}
+bool KeyState::backspace() const noexcept {
+	return 0 != this->keystatebuf[KEY_INPUT_BACK];;
 }
 bool operator!=(const KeyState& l, size_t r) {
 	return 0 == l[r];
