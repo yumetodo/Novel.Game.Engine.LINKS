@@ -6,6 +6,8 @@
 #ifndef LINKS_GAME_H_
 #define LINKS_GAME_H_
 
+#define WIN32_LEAN_AND_MEAN
+
 #include <Windows.h>
 #include "DEF.h"
 #include "utility.hpp"
@@ -61,9 +63,6 @@ extern int DrawPointX, DrawPointY;
 
 // 参照する文字列番号と文字列中の文字ポインタ
 extern int SP, CP;
-
-//スクリプト用読込配列
-extern char String[script_line_num_lim][script_line_string_len_lim];
 
 //タイトル関連
 extern int TITLE;
@@ -150,4 +149,6 @@ void WINDOWNOVEL() noexcept;
 
 //ショートカットキー処理後の描画
 void SHORTCUT_KEY_DRAW() noexcept;
+
+void WORD_FORMAT();
 #endif //LINKS_GAME_H_

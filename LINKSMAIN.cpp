@@ -3,6 +3,8 @@
   https://github.com/S-H-GAMELINKS/Novel.Game.Engine.LINKS
   This software is released under the MIT License, see LICENSE.
 =============================================================================*/
+#define WIN32_LEAN_AND_MEAN
+
 #include "DxLib.h"
 #include "stdio.h"
 #include "GAME.h"
@@ -150,17 +152,6 @@ void TITLE_MENU(KeyState& key) {
 			//終了ウインドウ
 			GAME_FINISH(key);
 		}
-	}
-}
-
-//参照文字列処理
-void WORD_FORMAT() {
-
-	// 参照文字列の終端まで行っていたら参照文字列を進める
-	if (String[SP][CP] == '\0')
-	{
-		SP++;
-		CP = 0;
 	}
 }
 
