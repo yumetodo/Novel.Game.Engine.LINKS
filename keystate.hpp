@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <array>
+#include <functional>
 
 class KeyState
 {
@@ -29,6 +30,53 @@ public:
 	bool space() const noexcept;
 	bool backspace() const noexcept;
 	static constexpr std::size_t keybufsize = 256;
+	struct Executor{
+		struct flush_tag {};
+		struct flush_update_tag {};
+		struct none_tag {};
+		static constexpr flush_tag flush = {};
+		static constexpr flush_update_tag flush_update = {};
+		static constexpr none_tag none = {};
+	};
+	template<typename ExecutorType> struct ExecutorObj;
+	template<> class ExecutorObj<Executor::flush_tag> {
+	private:
+		std::reference_wrapper<::KeyState> key_;
+	public:
+		ExecutorObj() = delete;
+		ExecutorObj(const ExecutorObj&) = delete;
+		ExecutorObj(ExecutorObj&&) = default;
+		ExecutorObj& operator=(const ExecutorObj&) = delete;
+		ExecutorObj& operator=(ExecutorObj&&) = default;
+		ExecutorObj(::KeyState& key) : key_(key) {}
+		bool operator()() {
+			return this->key_.get().flush();
+		}
+	};
+	template<> class ExecutorObj<Executor::flush_update_tag> {
+	private:
+		std::reference_wrapper<::KeyState> key_;
+	public:
+		ExecutorObj() = delete;
+		ExecutorObj(const ExecutorObj&) = delete;
+		ExecutorObj(ExecutorObj&&) = default;
+		ExecutorObj& operator=(const ExecutorObj&) = delete;
+		ExecutorObj& operator=(ExecutorObj&&) = default;
+		ExecutorObj(::KeyState& key) : key_(key) {}
+		bool operator()() {
+			return this->key_.get().flush_update();
+		}
+	};
+	template<> class ExecutorObj<Executor::none_tag> {
+	public:
+		ExecutorObj() = delete;
+		ExecutorObj(const ExecutorObj&) = delete;
+		ExecutorObj(ExecutorObj&&) = default;
+		ExecutorObj& operator=(const ExecutorObj&) = delete;
+		ExecutorObj& operator=(ExecutorObj&&) = default;
+		constexpr ExecutorObj(::KeyState&) {}
+		constexpr bool operator()() const { return true; }
+	};
 private:
 	bool flush_stream() noexcept;
 	std::array<int, 256> keystatebuf;
