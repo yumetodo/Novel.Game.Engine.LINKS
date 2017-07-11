@@ -89,10 +89,10 @@ namespace {
 
 }
 //既読スキップ判定
-void SKIP_READ_CHECK() noexcept {
+void SKIP_READ_CHECK(KeyState& key) noexcept {
 	const SkipDataConv* conv = reinterpret_cast<const SkipDataConv*>(&TextIgnoredFlags);
 	//既読データ読み込み時の判定
-	if (IDYES == SKIP_READ_MESSAGE() && 0 < EndFlag && EndFlag <= countof(conv->arr) && 1 == conv->arr[EndFlag - 1]) {
+	if (IDYES == SKIP_READ_MESSAGE(key, KeyState::Executor::flush_update) && 0 < EndFlag && EndFlag <= countof(conv->arr) && 1 == conv->arr[EndFlag - 1]) {
 		skip_auto = Skiptype::skip;
 	}
 	//ショートカットキー時の事後処理
@@ -100,8 +100,8 @@ void SKIP_READ_CHECK() noexcept {
 }
 
 //スキップ処理
-void SKIP_START() noexcept {
-	if (IDYES == MessageBoxYesNo("スキップを実行しますか？")) {
+void SKIP_START(KeyState& key) noexcept {
+	if (IDYES == MessageBoxYesNo("スキップを実行しますか？", key, KeyState::Executor::flush_update)) {
 		skip_auto = Skiptype::skip;
 		GAMEMENU_COUNT = true;
 		//サウンドノベル風描画時の処理
@@ -110,10 +110,9 @@ void SKIP_START() noexcept {
 		WINDOWNOVEL();
 	}
 }
-
 //オート処理
-void AUTO_START() noexcept {
-	if (IDYES == AUTO_MESSAGE()) {
+void AUTO_START(KeyState& key) noexcept {
+	if (IDYES == AUTO_MESSAGE(key, KeyState::Executor::flush_update)) {
 		skip_auto = Skiptype::automatic;
 		GAMEMENU_COUNT = true;
 		//サウンドノベル風描画時の処理
@@ -124,8 +123,8 @@ void AUTO_START() noexcept {
 }
 
 //オート/スキップ停止処理
-void AUTO_SKIP_STOP() noexcept {
-	if (IDYES == AUTO_SKIP_MESSAGE()) {
+void AUTO_SKIP_STOP(KeyState& key) noexcept {
+	if (IDYES == AUTO_SKIP_MESSAGE(key, KeyState::Executor::flush_update)) {
 		skip_auto = Skiptype::off;
 		GAMEMENU_COUNT = true;
 		//サウンドノベル風描画時の処理

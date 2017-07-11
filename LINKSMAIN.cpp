@@ -84,12 +84,13 @@ void TITLE_MENU_KEY_MOVE(const KeyState& key) {
 	}
 }
 
-//タイトルメニュー終了処理
-void TITLE_MENU_END() {
-	if (IDYES == MessageBoxYesNo("終了しますか？")) {
-		EndFlag = 99999;
+namespace {
+	//タイトルメニュー終了処理
+	void TITLE_MENU_END(KeyState& key) {
+		if (IDYES == MessageBoxYesNo("終了しますか？", key, KeyState::Executor::flush_update)) {
+			EndFlag = 99999;
+		}
 	}
-	WaitTimer(300);
 }
 
 //タイトルメニュー(選択処理)
@@ -100,23 +101,18 @@ void TITLE_MENU_CHOICE(KeyState& key) {
 	}
 	if (TitleMenuPosY == title_menu_game_load_pos_y && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 		SAVEDATA_LOAD(key);
-		key.flush_update();
 	}
 	if (TitleMenuPosY == title_menu_game_config_pos_y && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 		CONFIG(key);
-		key.flush_update();
 	}
 	if (TitleMenuPosY == title_menu_quick_load_pos_y && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
-		QUICKSAVE_LOAD();
-		key.flush_update();
+		QUICKSAVE_LOAD(key);
 	}
 	if (TitleMenuPosY == title_menu_continue_pos_y && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
-		CONTINUE_LOAD();
-		key.flush_update();
+		CONTINUE_LOAD(key);
 	}
 	if (TitleMenuPosY == title_menu_game_quit_pos_y && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
-		TITLE_MENU_END();
-		key.flush_update();
+		TITLE_MENU_END(key);
 	}
 }
 

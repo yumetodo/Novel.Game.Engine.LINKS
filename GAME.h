@@ -109,10 +109,10 @@ int CONFIG_SAVE();
 int CONFIG_LOAD();
 
 //クイックロード
-int QUICKSAVE_LOAD();
+int QUICKSAVE_LOAD(KeyState& key);
 
 //コンティニュー用ロード
-int CONTINUE_LOAD();
+int CONTINUE_LOAD(KeyState& key);
 
 //セーブ・ロード・スキップ・オート他 ゲームメニュー
 int GAMEMENU(KeyState& key);

@@ -39,12 +39,11 @@ namespace {
 		//バックログ（キー操作関連）
 		if (LOG != 10 && key.up() || LOG != 10 && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
 			LOG++;
-			key.flush();
 		}
 		if (LOG != 1 && key.down() || LOG != 1 && (GetMouseInput() & MOUSE_INPUT_RIGHT) != 0) {
 			LOG--;
-			key.flush();
 		}
+		key.flush();
 	}
 
 	//バックログの描画関数
@@ -67,7 +66,7 @@ namespace {
 //バックログ参照
 void BACKLOG_DRAW(KeyState& key) noexcept {
 	//バックログ参照メッセージ
-	if (backLogMessage() == IDYES) {
+	if (IDYES == backLogMessage(key, KeyState::Executor::flush, KeyState::Executor::flush_update)) {
 
 		WaitTimer(600);//キー判定消去待ち目的ではない
 
@@ -91,7 +90,7 @@ void BACKLOG_DRAW(KeyState& key) noexcept {
 
 				DeleteGraph(BACKLOG[0]);
 
-				key.flush();
+				key.flush_update();
 
 				//ショートカットキー時の事後処理
 				SHORTCUT_KEY_DRAW();

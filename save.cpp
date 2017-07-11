@@ -88,8 +88,9 @@ namespace {
 		GAMEMENU_COUNT = true;
 	}
 
-	static int CreateSaveData(int* SaveSnapHandle, const char* Message, const char* ImagePath, const char* SaveDataPath) {
-		if (IDYES == MessageBoxYesNo(Message)) {
+	static int CreateSaveData(int* SaveSnapHandle, const char* Message, const char* ImagePath, const char* SaveDataPath, KeyState& key) {
+		//TODO: このif文は呼び出し元のループに持っていく
+		if (IDYES == MessageBoxYesNo(Message, key, KeyState::Executor::none, KeyState::Executor::flush_update)) {
 			//セーブデータ１用のスクリーンショット取得変数
 			*SaveSnapHandle = 1;
 
@@ -121,7 +122,7 @@ namespace {
 			fwrite(&Data, sizeof(Data), 1, fp); // SaveData_t構造体の中身を出力
 			fclose(fp);
 			//セーブ後のメッセージ
-			SAVE_MESSAGE();
+			SAVE_MESSAGE(key, KeyState::Executor::flush_update);
 			//サウンドノベル風描画時の処理
 			SAVE_SOUNDNOVEL();
 			//ウインドウ風描画時の処理
@@ -131,32 +132,35 @@ namespace {
 		return 0;
 	}
 	//セーブデータ１にセーブ
-	int SAVEDATA_1_SAVE() {
+	int SAVEDATA_1_SAVE(KeyState& key) {
 		return CreateSaveData(
 			&SAVESNAP_HANDLE1,
 			"セーブデータ1にセーブしますか？",
 			"DATA/SAVE/SAVESNAP1.png",
-			"DATA/SAVE/SAVEDATA1.dat"
+			"DATA/SAVE/SAVEDATA1.dat",
+			key
 		);
 	}
 
 	//セーブデータ2にセーブ
-	int SAVEDATA_2_SAVE() {
+	int SAVEDATA_2_SAVE(KeyState& key) {
 		return CreateSaveData(
 			&SAVESNAP_HANDLE2,
 			"セーブデータ2にセーブしますか？",
 			"DATA/SAVE/SAVESNAP2.png",
-			"DATA/SAVE/SAVEDATA2.dat"
+			"DATA/SAVE/SAVEDATA2.dat",
+			key
 		);
 	}
 
 	//セーブデータ3にセーブ
-	int SAVEDATA_3_SAVE() {
+	int SAVEDATA_3_SAVE(KeyState& key) {
 		return CreateSaveData(
 			&SAVESNAP_HANDLE3,
 			"セーブデータ3にセーブしますか？",
 			"DATA/SAVE/SAVESNAP3.png",
-			"DATA/SAVE/SAVEDATA3.dat"
+			"DATA/SAVE/SAVEDATA3.dat",
+			key
 		);
 	}
 
@@ -205,29 +209,24 @@ namespace {
 			//セーブデータ１にセーブ
 			if (SAVE_y == save_base_pos_y && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ１にセーブ
-				SAVEDATA_1_SAVE();
-				key.flush_update();
+				SAVEDATA_1_SAVE(key);
 			}
 
 			//セーブデータ２にセーブ
 			if (SAVE_y == (save_base_pos_y * 2) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ２にセーブ
-				SAVEDATA_2_SAVE();
-				key.flush_update();
+				SAVEDATA_2_SAVE(key);
 			}
 
 			//セーブデータ３にセーブ
 			if (SAVE_y == (save_base_pos_y * 3) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ３にセーブ
-				SAVEDATA_3_SAVE();
-				key.flush_update();
+				SAVEDATA_3_SAVE(key);
 			}
 
 			//画面に戻る
 			if (SAVE_y == (save_base_pos_y * 4) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
-				const auto choice = MessageBoxYesNo("戻りますか？");
-				key.flush_update();
-				if (IDYES == choice) {
+				if (IDYES == MessageBoxYesNo("戻りますか？", key, KeyState::Executor::flush_update)) {
 					ClearDrawScreen();
 					//ショートカットキー時の事後処理
 					SHORTCUT_KEY_DRAW();
@@ -239,7 +238,7 @@ namespace {
 }
 //セーブデータセーブ関数
 void SAVEDATA_SAVE(KeyState& key) {
-	if (IDYES == MessageBoxYesNo("セーブ画面に移行しますか？")) {
+	if (IDYES == MessageBoxYesNo("セーブ画面に移行しますか？", key, KeyState::Executor::flush, KeyState::Executor::flush_update)) {
 		ClearDrawScreen();
 		SAVE_y = save_base_pos_y;
 
@@ -283,20 +282,21 @@ namespace {
 		GAMEMENU_COUNT = true;
 	}
 
-	static int LoadSaveData(const char* Message, const char* ErrorMessage, const char* SaveDataPath) {
-		if (IDYES == MessageBoxYesNo(Message)) {
+	static int LoadSaveData(const char* Message, const char* ErrorMessage, const char* SaveDataPath, KeyState& key) {
+		//TODO: このif文は呼び出し元のループに持っていく
+		if (IDYES == MessageBoxYesNo(Message, key, KeyState::Executor::none, KeyState::Executor::flush_update)) {
 			SaveData_t Data;
 			FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 			const errno_t er = fopen_s(&fp, SaveDataPath, "rb");
 			if (0 != er) {
-				MessageBoxOk(ErrorMessage);
+				MessageBoxOk(ErrorMessage, key, KeyState::Executor::flush_update);
 				return 0;
 			}
 #else
 			fp = fopen(SaveDataPath, "rb");
 			if (fp == nullptr) {
-				MessageBoxOk(ErrorMessage);
+				MessageBoxOk(ErrorMessage, key, KeyState::Executor::flush_update);
 				return 0;
 			}
 #endif
@@ -310,7 +310,7 @@ namespace {
 			SAVE_CHOICE = Data.SAVE_CHOICE;
 
 			//ロード後のメッセージ
-			LOAD_MESSAGE();
+			LOAD_MESSAGE(key, KeyState::Executor::flush_update);
 			//ロード後の処理(サウンドノベル風)
 			LOAD_SOUNDNOVEL();
 			//ロード後の処理(ウインドウ風)
@@ -320,18 +320,18 @@ namespace {
 		return 0;
 	}
 	//セーブデータ1のロード
-	int SAVEDATA_1_LOAD() {
-		return LoadSaveData("セーブデータ1をロードしますか？", "セーブデータ1がありません！", "DATA/SAVE/SAVEDATA1.dat");
+	int SAVEDATA_1_LOAD(KeyState& key) {
+		return LoadSaveData("セーブデータ1をロードしますか？", "セーブデータ1がありません！", "DATA/SAVE/SAVEDATA1.dat", key);
 	}
 
 	//セーブデータ2のロード
-	int SAVEDATA_2_LOAD() {
-		return LoadSaveData("セーブデータ2をロードしますか？", "セーブデータ2がありません！", "DATA/SAVE/SAVEDATA2.dat");
+	int SAVEDATA_2_LOAD(KeyState& key) {
+		return LoadSaveData("セーブデータ2をロードしますか？", "セーブデータ2がありません！", "DATA/SAVE/SAVEDATA2.dat", key);
 	}
 
 	//セーブデータ3をロード
-	int SAVEDATA_3_LOAD() {
-		return LoadSaveData("セーブデータ3をロードしますか？", "セーブデータ3がありません！", "DATA/SAVE/SAVEDATA3.dat");
+	int SAVEDATA_3_LOAD(KeyState& key) {
+		return LoadSaveData("セーブデータ3をロードしますか？", "セーブデータ3がありません！", "DATA/SAVE/SAVEDATA3.dat", key);
 	}
 
 	//セーブデータ・ロード画面ループ
@@ -360,26 +360,21 @@ namespace {
 			//セーブデータ１のロード
 			if (SAVE_y == save_base_pos_y && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 				//セーブデータ１をロード
-				SAVEDATA_1_LOAD();
-				key.flush();
+				SAVEDATA_1_LOAD(key);
 			}
 			//セーブデータ２のロード
 			if (SAVE_y == (save_base_pos_y * 2) && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 				//セーブデータ2をロード
-				SAVEDATA_2_LOAD();
-				key.flush();
+				SAVEDATA_2_LOAD(key);
 			}
 			//セーブデータ３のロード
 			if (SAVE_y == (save_base_pos_y * 3) && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 				//セーブデータ2をロード
-				SAVEDATA_3_LOAD();
-				key.flush();
+				SAVEDATA_3_LOAD(key);
 			}
 			//戻る
 			if (SAVE_y == (save_base_pos_y * 4) && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
-				const auto choice = MessageBoxYesNo("戻りますか？");
-				key.flush();
-				if (IDYES == choice) {
+				if (IDYES == MessageBoxYesNo("戻りますか？", key, KeyState::Executor::flush)) {
 					ClearDrawScreen();
 					//ショートカットキー時の事後処理
 					SHORTCUT_KEY_DRAW();
@@ -392,7 +387,7 @@ namespace {
 
 //セーブデータロード関数
 int SAVEDATA_LOAD(KeyState& key) {
-	if (IDYES == MessageBoxYesNo("ロード画面に移行しますか？")) {
+	if (IDYES == MessageBoxYesNo("ロード画面に移行しますか？", key, KeyState::Executor::flush, KeyState::Executor::flush_update)) {
 
 		ClearDrawScreen();
 		SAVE_y = save_base_pos_y;
@@ -408,9 +403,11 @@ int SAVEDATA_LOAD(KeyState& key) {
 
 namespace {
 	//削除後のメッセージ
-	static void DELETE_MESSAGE() {
-
+	[[deprecated]] static void DELETE_MESSAGE() {
+#pragma warning(push)
+#pragma warning(disable: 4996)
 		MessageBoxOk("削除しました！");
+#pragma warning(pop)
 	}
 	template<typename ExectorType>
 	static void DELETE_MESSAGE(KeyState& key, ExectorType t) {
@@ -435,12 +432,12 @@ namespace {
 		GAMEMENU_COUNT = true;
 	}
 
-	static void DeleteSaveData(const char* Message, const char* ImagePath, const char* SaveDataPath) {
-		if (IDYES == MessageBoxYesNo(Message)) {
+	static void DeleteSaveData(const char* Message, const char* ImagePath, const char* SaveDataPath, KeyState& key) {
+		if (IDYES == MessageBoxYesNo(Message, key, KeyState::Executor::none, KeyState::Executor::flush_update)) {
 			remove(SaveDataPath);
 			remove(ImagePath);
 			//削除後のメッセージ
-			DELETE_MESSAGE();
+			DELETE_MESSAGE(key, KeyState::Executor::flush_update);
 			//削除後の処理(サウンドノベル風)
 			DELETE_SOUNDNOVEL();
 			//削除後の処理(ウインドウ風)
@@ -449,18 +446,18 @@ namespace {
 	}
 
 	//セーブデータ1削除
-	void SAVEDATA_1_DELETE() {
-		DeleteSaveData("セーブデータ1を削除しますか？", "DATA/SAVE/SAVESNAP1.png", "DATA/SAVE/SAVEDATA1.dat");
+	void SAVEDATA_1_DELETE(KeyState& key) {
+		DeleteSaveData("セーブデータ1を削除しますか？", "DATA/SAVE/SAVESNAP1.png", "DATA/SAVE/SAVEDATA1.dat", key);
 	}
 
 	//セーブデータ2削除
-	void SAVEDATA_2_DELETE() {
-		DeleteSaveData("セーブデータ2を削除しますか？", "DATA/SAVE/SAVESNAP2.png", "DATA/SAVE/SAVEDATA2.dat");
+	void SAVEDATA_2_DELETE(KeyState& key) {
+		DeleteSaveData("セーブデータ2を削除しますか？", "DATA/SAVE/SAVESNAP2.png", "DATA/SAVE/SAVEDATA2.dat", key);
 	}
 
 	//セーブデータ3削除
-	void SAVEDATA_3_DELETE() {
-		DeleteSaveData("セーブデータ3を削除しますか？", "DATA/SAVE/SAVESNAP3.png", "DATA/SAVE/SAVEDATA3.dat");
+	void SAVEDATA_3_DELETE(KeyState& key) {
+		DeleteSaveData("セーブデータ3を削除しますか？", "DATA/SAVE/SAVESNAP3.png", "DATA/SAVE/SAVEDATA3.dat", key);
 	}
 
 	//セーブデータ削除画面ループ
@@ -488,24 +485,20 @@ namespace {
 
 			if (SAVE_y == save_base_pos_y && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ1削除処理
-				SAVEDATA_1_DELETE();
-				key.flush();
+				SAVEDATA_1_DELETE(key);
 			}
 			if (SAVE_y == (save_base_pos_y * 2) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ2削除処理
-				SAVEDATA_2_DELETE();
-				key.flush();
+				SAVEDATA_2_DELETE(key);
 			}
 			if (SAVE_y == (save_base_pos_y * 3) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ3削除処理
-				SAVEDATA_3_DELETE();
-				key.flush();
+				SAVEDATA_3_DELETE(key);
 			}
 			if (SAVE_y == (save_base_pos_y * 4) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
-				const auto choice = MessageBoxYesNo("戻りますか？");
+				const auto choice = MessageBoxYesNo("戻りますか？", key, KeyState::Executor::flush);
 				using namespace std::chrono_literals;
 				const auto t = std::chrono::high_resolution_clock::now();
-				key.flush();
 				if (IDYES == choice) {
 					ClearDrawScreen();
 					//ショートカットキー時の事後処理
@@ -521,7 +514,7 @@ namespace {
 
 //セーブデータ削除処理
 void SAVEDATA_DELETE(KeyState& key) {
-	if (IDYES == MessageBoxYesNo("セーブデータ削除画面に移行しますか？")) {
+	if (IDYES == MessageBoxYesNo("セーブデータ削除画面に移行しますか？", key, KeyState::Executor::flush, KeyState::Executor::flush_update)) {
 
 		ClearDrawScreen();
 		SAVE_y = save_base_pos_y;
