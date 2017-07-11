@@ -877,8 +877,6 @@ namespace {
 
 	//コンフィグ(タイトル/ゲームメニューへ戻る)
 	void CONFIG_TITLE_BACK(KeyState& key) {
-		//TODO: remove this update()
-		key.update();
 		//タイトルに戻る/ゲームメニューに戻る
 		if (GAME_y == game_menu_base_pos_y * 9 && key.enter() || GAME_y == game_menu_base_pos_y * 9 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 			if (IDYES == MessageBoxYesNo("戻りますか？", key, KeyState::Executor::flush_update)) {
