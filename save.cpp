@@ -56,9 +56,11 @@ namespace {
 	}
 
 	//セーブ後のメッセージ
-	void SAVE_MESSAGE() {
-
+	[[deprecated]] void SAVE_MESSAGE() {
+#pragma warning(push)
+#pragma warning(disable: 4996)
 		MessageBoxOk("セーブしました！");
+#pragma warning(pop)
 	}
 	template<typename ExectorType>
 	void SAVE_MESSAGE(KeyState& key, ExectorType t) noexcept {
@@ -251,10 +253,13 @@ void SAVEDATA_SAVE(KeyState& key) {
 
 namespace {
 	//ロード後のメッセージ
-	void LOAD_MESSAGE() {
-
+	[[deprecated]] void LOAD_MESSAGE() {
+#pragma warning(push)
+#pragma warning(disable: 4996)
 		MessageBoxOk("ロードしました！");
+#pragma warning(pop)
 	}
+	
 	template<typename ExectorType>
 	void LOAD_MESSAGE(KeyState& key, ExectorType t) {
 		MessageBoxOk("ロードしました！", key, t);

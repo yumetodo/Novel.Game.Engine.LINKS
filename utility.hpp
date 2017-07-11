@@ -16,8 +16,7 @@
 #	define LINKS_EXPECT_TRUE(expression) assert(expression)
 #endif
 
-int MessageBoxYesNo(LPCTSTR lpText) noexcept;
-int MessageBoxOk(LPCTSTR lpText) noexcept;
+[[deprecated]] int MessageBoxYesNo(LPCTSTR lpText) noexcept;
 template<typename ExectorType>
 int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, ExectorType) noexcept {
 #pragma warning(push)
@@ -41,6 +40,7 @@ int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, OnYesExectorType, OnNoExector
 	}
 	return re;
 }
+[[deprecated]] int MessageBoxOk(LPCTSTR lpText) noexcept;
 template<typename ExectorType>
 int MessageBoxOk(LPCTSTR lpText, KeyState& key, ExectorType) noexcept {
 #pragma warning(push)
