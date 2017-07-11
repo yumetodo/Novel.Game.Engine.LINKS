@@ -60,7 +60,10 @@ namespace {
 
 		MessageBoxOk("セーブしました！");
 	}
-
+	template<typename ExectorType>
+	void SAVE_MESSAGE(KeyState& key, ExectorType t) noexcept {
+		MessageBoxOk("セーブしました！", key, t);
+	}
 	//セーブ後の処理(サウンドノベル風)
 	void SAVE_SOUNDNOVEL() {
 
@@ -252,6 +255,10 @@ namespace {
 
 		MessageBoxOk("ロードしました！");
 	}
+	template<typename ExectorType>
+	void LOAD_MESSAGE(KeyState& key, ExectorType t) {
+		MessageBoxOk("ロードしました！", key, t);
+	}
 
 	//ロード後の処理(サウンドノベル風)
 	void LOAD_SOUNDNOVEL() {
@@ -399,6 +406,10 @@ namespace {
 	static void DELETE_MESSAGE() {
 
 		MessageBoxOk("削除しました！");
+	}
+	template<typename ExectorType>
+	static void DELETE_MESSAGE(KeyState& key, ExectorType t) {
+		MessageBoxOk("削除しました！", key, t);
 	}
 
 	//削除後の処理(サウンドノベル風)

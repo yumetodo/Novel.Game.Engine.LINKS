@@ -21,6 +21,14 @@ namespace {
 	int backLogMessage() noexcept {
 		return MessageBoxYesNo("バックログ画面に移行しますか？");
 	}
+	template<typename ExectorType>
+	int backLogMessage(KeyState& key, ExectorType t) noexcept {
+		return MessageBoxYesNo("バックログ画面に移行しますか？", key, t);
+	}
+	template<typename OnYesExectorType, typename OnNoExectorType>
+	int backLogMessage(KeyState& key, OnYesExectorType onYesType, OnNoExectorType onNoType) noexcept {
+		return MessageBoxYesNo("バックログ画面に移行しますか？", key, onYesType, onNoType);
+	}
 
 	//バックログ(キー操作関連)
 	void BACKLOG_KEY_MOVE(KeyState& key) noexcept {

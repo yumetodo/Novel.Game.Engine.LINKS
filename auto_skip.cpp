@@ -29,15 +29,39 @@ namespace {
 	int SKIP_READ_MESSAGE() noexcept {
 		return MessageBoxYesNo("既読スキップを実行しますか？");
 	}
+	template<typename ExectorType>
+	int SKIP_READ_MESSAGE(KeyState& key, ExectorType t) noexcept {
+		return MessageBoxYesNo("既読スキップを実行しますか？", key, t);
+	}
+	template<typename OnYesExectorType, typename OnNoExectorType>
+	int SKIP_READ_MESSAGE(KeyState& key, OnYesExectorType onYesType, OnNoExectorType onNoType) noexcept {
+		return MessageBoxYesNo("既読スキップを実行しますか？", key, onYesType, onNoType);
+	}
 
 	//オート処理メッセージ
 	int AUTO_MESSAGE() noexcept {
 		return MessageBoxYesNo("オートモードを実行しますか？");
 	}
+	template<typename ExectorType>
+	int AUTO_MESSAGE(KeyState& key, ExectorType t) noexcept {
+		return MessageBoxYesNo("オートモードを実行しますか？", key, t);
+	}
+	template<typename OnYesExectorType, typename OnNoExectorType>
+	int AUTO_MESSAGE(KeyState& key, OnYesExectorType onYesType, OnNoExectorType onNoType) noexcept {
+		return MessageBoxYesNo("オートモードを実行しますか？", key, onYesType, onNoType);
+	}
 
 	//オート/スキップ停止処理メッセージ
 	int AUTO_SKIP_MESSAGE() noexcept {
 		return MessageBoxYesNo("スキップ又はオートモードを終了しますか？");
+	}
+	template<typename ExectorType>
+	int AUTO_SKIP_MESSAGE(KeyState& key, ExectorType t) noexcept {
+		return MessageBoxYesNo("スキップ又はオートモードを終了しますか？", key, t);
+	}
+	template<typename OnYesExectorType, typename OnNoExectorType>
+	int AUTO_SKIP_MESSAGE(KeyState& key, OnYesExectorType onYesType, OnNoExectorType onNoType) noexcept {
+		return MessageBoxYesNo("スキップ又はオートモードを終了しますか？", key, onYesType, onNoType);
 	}
 
 	//既読スキップ後の処理(サウンドノベル風)
