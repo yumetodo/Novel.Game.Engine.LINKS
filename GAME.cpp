@@ -1877,7 +1877,6 @@ int SCREENSHOT(KeyState& key) {
 
 //各種F1～F11キー
 void SHORTCUT_KEY(KeyState& key) {
-	//TODO: hide key operation side-effect
 	//セーブ
 	if (EndFlag != 99 && key == KEY_INPUT_F1) {
 		SHORTCUT_KEY_FLAG = 1;
