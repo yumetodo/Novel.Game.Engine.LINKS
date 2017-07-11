@@ -15,23 +15,19 @@
 #else
 #	define LINKS_EXPECT_TRUE(expression) assert(expression)
 #endif
-
-[[deprecated]] int MessageBoxYesNo(LPCTSTR lpText) noexcept;
+namespace legacy {
+	int MessageBoxYesNo(LPCTSTR lpText) noexcept;
+	int MessageBoxOk(LPCTSTR lpText) noexcept;
+}
 template<typename ExectorType>
 int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, ExectorType) noexcept {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-	const auto re = MessageBoxYesNo(lpText);
-#pragma warning(pop)
+	const auto re = legacy::MessageBoxYesNo(lpText);
 	KeyState::ExecutorObj<ExectorType>{key}();
 	return re;
 }
 template<typename OnYesExectorType, typename OnNoExectorType>
 int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, OnYesExectorType, OnNoExectorType) noexcept {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-	const auto re = MessageBoxYesNo(lpText);
-#pragma warning(pop)
+	const auto re = legacy::MessageBoxYesNo(lpText);
 	if (IDYES == re) {
 		KeyState::ExecutorObj<OnYesExectorType>{key}();
 	}
@@ -40,13 +36,9 @@ int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, OnYesExectorType, OnNoExector
 	}
 	return re;
 }
-[[deprecated]] int MessageBoxOk(LPCTSTR lpText) noexcept;
 template<typename ExectorType>
 int MessageBoxOk(LPCTSTR lpText, KeyState& key, ExectorType) noexcept {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-	const auto re = MessageBoxOk(lpText);
-#pragma warning(pop)
+	const auto re = legacy::MessageBoxOk(lpText);
 	KeyState::ExecutorObj<ExectorType>{key}();
 	return re;
 }
