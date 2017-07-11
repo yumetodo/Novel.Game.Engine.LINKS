@@ -26,12 +26,6 @@ void disableSkip() noexcept {
 
 namespace {
 	//既読スキップメッセージ
-	[[deprecated]] int SKIP_READ_MESSAGE() noexcept {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-		return MessageBoxYesNo("既読スキップを実行しますか？");
-#pragma warning(pop)
-	}
 	template<typename ExectorType>
 	int SKIP_READ_MESSAGE(KeyState& key, ExectorType t) noexcept {
 		return MessageBoxYesNo("既読スキップを実行しますか？", key, t);
@@ -42,12 +36,6 @@ namespace {
 	}
 
 	//オート処理メッセージ
-	[[deprecated]] int AUTO_MESSAGE() noexcept {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-		return MessageBoxYesNo("オートモードを実行しますか？");
-#pragma warning(pop)
-	}
 	template<typename ExectorType>
 	int AUTO_MESSAGE(KeyState& key, ExectorType t) noexcept {
 		return MessageBoxYesNo("オートモードを実行しますか？", key, t);
@@ -58,12 +46,6 @@ namespace {
 	}
 
 	//オート/スキップ停止処理メッセージ
-	[[deprecated]] int AUTO_SKIP_MESSAGE() noexcept {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-		return MessageBoxYesNo("スキップ又はオートモードを終了しますか？");
-#pragma warning(pop)
-	}
 	template<typename ExectorType>
 	int AUTO_SKIP_MESSAGE(KeyState& key, ExectorType t) noexcept {
 		return MessageBoxYesNo("スキップ又はオートモードを終了しますか？", key, t);

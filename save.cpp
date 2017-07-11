@@ -56,12 +56,6 @@ namespace {
 	}
 
 	//セーブ後のメッセージ
-	[[deprecated]] void SAVE_MESSAGE() {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-		MessageBoxOk("セーブしました！");
-#pragma warning(pop)
-	}
 	template<typename ExectorType>
 	void SAVE_MESSAGE(KeyState& key, ExectorType t) noexcept {
 		MessageBoxOk("セーブしました！", key, t);
@@ -251,14 +245,7 @@ void SAVEDATA_SAVE(KeyState& key) {
 }
 
 namespace {
-	//ロード後のメッセージ
-	[[deprecated]] void LOAD_MESSAGE() {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-		MessageBoxOk("ロードしました！");
-#pragma warning(pop)
-	}
-	
+	//ロード後のメッセージ	
 	template<typename ExectorType>
 	void LOAD_MESSAGE(KeyState& key, ExectorType t) {
 		MessageBoxOk("ロードしました！", key, t);
@@ -403,12 +390,6 @@ int SAVEDATA_LOAD(KeyState& key) {
 
 namespace {
 	//削除後のメッセージ
-	[[deprecated]] static void DELETE_MESSAGE() {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-		MessageBoxOk("削除しました！");
-#pragma warning(pop)
-	}
 	template<typename ExectorType>
 	static void DELETE_MESSAGE(KeyState& key, ExectorType t) {
 		MessageBoxOk("削除しました！", key, t);

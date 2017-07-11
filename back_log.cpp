@@ -18,12 +18,6 @@ namespace {
 	int LOG = 1, BACKLOG_COUNT = 1;
 
 	//バックログ参照メッセージ
-	[[deprecated]] int backLogMessage() noexcept {
-#pragma warning(push)
-#pragma warning(disable: 4996)
-		return MessageBoxYesNo("バックログ画面に移行しますか？");
-#pragma warning(pop)
-	}
 	template<typename ExectorType>
 	int backLogMessage(KeyState& key, ExectorType t) noexcept {
 		return MessageBoxYesNo("バックログ画面に移行しますか？", key, t);
