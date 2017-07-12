@@ -1419,7 +1419,7 @@ namespace {
 				//選択肢時のバックログ取得
 				SCRIPT_OUTPUT_CHOICE_BACKLOG();
 
-				//選択後の分岐処理(選択肢↑)
+				//選択後の分岐処理(選択肢↓)
 				SCRIPT_OUTPUT_CHOICE_BRANCH_DOWN();
 				CP++;
 				break;
