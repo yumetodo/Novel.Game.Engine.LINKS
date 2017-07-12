@@ -37,7 +37,7 @@ unsigned int Cr;
 static_assert(
 	std::is_same<decltype(Cr), decltype(DxLib::GetColor(std::declval<int>(), std::declval<int>(), std::declval<int>()))>::value,
 	"Your DxLib version is too old."
-	);
+);
 
 //ゲームオーバー
 static int GAMEOVER;
