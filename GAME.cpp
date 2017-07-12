@@ -1477,7 +1477,7 @@ namespace {
 		if (ConfigData.soundnovel_winownovel == 1) {
 			char CHARACTER_NAME[10] = {};
 			//キャラクター名を読み込む
-			assert(0 < CP && std::size_t(CP + 10) <= String[SP].size());
+			assert(0 < CP && std::size_t(CP + 10) < String[SP].size());
 			memcpy(CHARACTER_NAME, &String[SP][CP + 1], 9);
 			CHARACTER_NAME[9] = '\0';
 
@@ -1498,7 +1498,7 @@ namespace {
 	//文字列の描画
 	void SCRIPT_OUTPUT_STRING_DRAW() {
 		//TODO: https://github.com/S-H-GAMELINKS/Novel.Game.Engine.LINKS/issues/3
-		assert(std::size_t(CP + 1) <= String[SP].size());
+		assert(std::size_t(CP + 1) < String[SP].size());
 		// １文字分抜き出す
 		OneMojiBuf[0] = String[SP][CP];
 		OneMojiBuf[1] = String[SP][CP + 1];
@@ -1606,7 +1606,7 @@ namespace {
 
 	//動画再生処理
 	void MOVIE_START() noexcept {
-		assert(std::size_t(CP + 1) <= String[SP].size());
+		assert(std::size_t(CP + 1) < String[SP].size());
 		if (isdigit(String[SP][CP]) && isdigit(String[SP][CP + 1])) {
 			const size_t CharactorNumber = (ctoui(String[SP][CP]) * 10) + ctoui(String[SP][CP + 1]) - 1;
 			if (99 <= CharactorNumber) return;
@@ -1644,7 +1644,7 @@ namespace {
 
 //スクリプトタグ処理(メイン)関数
 int SCRIPT_OUTPUT(KeyState& key) {
-	assert(std::size_t(CP + 1) <= String[SP].size());
+	assert(std::size_t(CP + 1) < String[SP].size());
 	switch (String[SP][CP])
 	{
 
