@@ -96,7 +96,6 @@ namespace {
 				SAVESNAP_CHOICE = 0;
 				*SaveSnapHandle = 0;
 				SetDrawScreen(DX_SCREEN_FRONT);
-
 			}
 
 			//セーブデータの作成
@@ -104,12 +103,12 @@ namespace {
 			FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 			const errno_t er = fopen_s(&fp, SaveDataPath, "wb");
-			if (0 != er) {
+			if (0 != er || nullptr == fp) {
 				return 0;
 			}
 #else
 			fp = fopen(SaveDataPath, "wb");//バイナリファイルを開く
-			if (fp == nullptr) {//エラーが起きたらnullptrを返す
+			if (nullptr == fp) {//エラーが起きたらnullptrを返す
 				return 0;
 			}
 #endif
@@ -276,7 +275,7 @@ namespace {
 			FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 			const errno_t er = fopen_s(&fp, SaveDataPath, "rb");
-			if (0 != er) {
+			if (0 != er || nullptr == fp) {
 				MessageBoxOk(ErrorMessage, key, KeyState::Executor::flush_update);
 				return 0;
 			}
@@ -288,6 +287,7 @@ namespace {
 			}
 #endif
 			fread(&Data, sizeof(Data), 1, fp);
+			fclose(fp);
 			EndFlag = Data.ENDFLAG;
 			SP = Data.SP;
 			CP = Data.CP;
@@ -302,7 +302,6 @@ namespace {
 			LOAD_SOUNDNOVEL();
 			//ロード後の処理(ウインドウ風)
 			LOAD_WINDOWNOVEL();
-			fclose(fp);
 		}
 		return 0;
 	}

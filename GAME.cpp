@@ -381,16 +381,17 @@ int SKIP_READ_LOAD()
 	FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 	const errno_t er = fopen_s(&fp, "DATA/SAVE/SKIP_READ.dat", "rb");
-	if (0 != er) {
+	if (0 != er || nullptr == fp) {
 		return 0;
 	}
 #else
 	fp = fopen("DATA/SAVE/SKIP_READ.dat", "rb");
-	if (fp == nullptr) {
+	if (nullptr == fp) {
 		return 0;
 	}
 #endif
 	fread(&TextIgnoredFlags, sizeof(SkipData_t), 1, fp);
+	fclose(fp);
 	return 0;
 }
 
@@ -400,20 +401,18 @@ int SKIP_READ_SAVE()
 	FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 	const errno_t er = fopen_s(&fp, "DATA/SAVE/SKIP_READ.dat", "wb");
-	if (0 != er) {
+	if (0 != er || nullptr == fp) {
 		return 0;
 	}
 #else
 	fp = fopen("DATA/SAVE/SKIP_READ.dat", "wb");//バイナリファイルを開く
-	if (fp == nullptr) {//エラーが起きたらnullptrを返す
+	if (nullptr == fp) {//エラーが起きたらnullptrを返す
 		return 0;
 	}
 #endif
 	fwrite(&TextIgnoredFlags, sizeof(SkipData_t), 1, fp); // SkipData_t構造体の中身を出力
-	fclose(fp);//ファイルを閉じる
-
+	fclose(fp);
 	return 0;
-
 }
 
 //CONFIG_SAVE関数
@@ -423,18 +422,17 @@ int CONFIG_SAVE()
 	FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 	const errno_t er = fopen_s(&fp, "DATA/SAVE/Config.dat", "wb");
-	if (0 != er) {
+	if (0 != er || nullptr == fp) {
 		return 0;
 	}
 #else
 	fp = fopen("DATA/SAVE/Config.dat", "wb");//バイナリファイルを開く
-	if (fp == nullptr) {//エラーが起きたらnullptrを返す
+	if (nullptr == fp) {//エラーが起きたらnullptrを返す
 		return 0;
 	}
 #endif
 	fwrite(&ConfigData, sizeof(ConfigData_t), 1, fp); // ConfigData_t構造体の中身を出力
-	fclose(fp);//ファイルを閉じる
-
+	fclose(fp);
 	return 0;
 }
 
@@ -445,18 +443,17 @@ int CONFIG_LOAD()
 	FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 	const errno_t er = fopen_s(&fp, "DATA/SAVE/Config.dat", "rb");
-	if (0 != er) {
+	if (0 != er || nullptr == fp) {
 		return 0;
 	}
 #else
 	fp = fopen("DATA/SAVE/Config.dat", "rb");
-	if (fp == nullptr) {
+	if (nullptr == fp) {
 		return 0;
 	}
 #endif
 	fread(&ConfigData, sizeof(ConfigData_t), 1, fp);
-	fclose(fp);//ファイルを閉じる
-
+	fclose(fp);
 	return 0;
 }
 
@@ -470,18 +467,17 @@ namespace {
 			FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 			const errno_t er = fopen_s(&fp, "DATA/SAVE/QUICKSAVEDATA.dat", "wb");
-			if (0 != er) {
+			if (0 != er || nullptr == fp) {
 				return 0;
 			}
 #else
 			fp = fopen("DATA/SAVE/QUICKSAVEDATA.dat", "wb");//バイナリファイルを開く
-			if (fp == nullptr) {//エラーが起きたらnullptrを返す
+			if (nullptr == fp) {//エラーが起きたらnullptrを返す
 				return 0;
 			}
 #endif
 			fwrite(&Data, sizeof(Data), 1, fp); // SaveData_t構造体の中身を出力
-			fclose(fp);//ファイルを閉じる
-
+			fclose(fp);
 			MessageBoxOk("セーブしました！", key, KeyState::Executor::flush_update);
 		}
 
@@ -499,16 +495,17 @@ int QUICKSAVE_LOAD(KeyState& key) {
 		FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 		const errno_t er = fopen_s(&fp, "DATA/SAVE/QUICKSAVEDATA.dat", "rb");
-		if (0 != er) {
+		if (0 != er || nullptr == fp) {
 			return 0;
 		}
 #else
 		fp = fopen("DATA/SAVE/QUICKSAVEDATA.dat", "rb");
-		if (fp == nullptr) {
+		if (nullptr == fp) {
 			return 0;
 		}
 #endif
 		fread(&Data, sizeof(Data), 1, fp);
+		fclose(fp);
 		EndFlag = Data.ENDFLAG;
 		SP = Data.SP;
 		CP = Data.CP;
@@ -526,8 +523,6 @@ int QUICKSAVE_LOAD(KeyState& key) {
 		WINDOWNOVEL();
 
 		MessageBoxOk("ロードしました！", key, KeyState::Executor::flush_update);
-
-		fclose(fp);
 	}
 	return 0;
 }
@@ -541,12 +536,12 @@ namespace {
 		FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 		const errno_t er = fopen_s(&fp, "DATA/SAVE/CONTINUESAVEDATA.dat", "wb");
-		if (0 != er) {
+		if (0 != er || nullptr == fp) {
 			return 0;
 		}
 #else
 		fp = fopen("DATA/SAVE/CONTINUESAVEDATA.dat", "wb");//バイナリファイルを開く
-		if (fp == nullptr) {//エラーが起きたらnullptrを返す
+		if (nullptr == fp) {//エラーが起きたらnullptrを返す
 			return 0;
 		}
 #endif
@@ -566,16 +561,17 @@ int CONTINUE_LOAD(KeyState& key) {
 		FILE *fp;
 #ifdef LINKS_HAS_FOPEN_S
 		const errno_t er = fopen_s(&fp, "DATA/SAVE/CONTINUESAVEDATA.dat", "rb");
-		if (0 != er) {
+		if (0 != er || nullptr == fp) {
 			return 0;
 		}
 #else
 		fp = fopen("DATA/SAVE/CONTINUESAVEDATA.dat", "rb");
-		if (fp == nullptr) {
+		if (nullptr == fp) {
 			return 0;
 		}
 #endif
 		fread(&Data, sizeof(Data), 1, fp);
+		fclose(fp);
 		EndFlag = Data.ENDFLAG;
 		SP = Data.SP;
 		CP = Data.CP;
@@ -593,8 +589,6 @@ int CONTINUE_LOAD(KeyState& key) {
 		WINDOWNOVEL();
 
 		MessageBoxOk("ロードしました！", key, KeyState::Executor::flush_update);
-
-		fclose(fp);
 	}
 	return 0;
 }
