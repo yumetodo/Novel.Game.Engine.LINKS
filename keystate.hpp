@@ -1,18 +1,42 @@
 ﻿#pragma once
 #include <array>
 #include <functional>
+#include <chrono>
 
 class KeyState
 {
 public:
-	KeyState() noexcept;
+	using default_clock = std::chrono::steady_clock;
+private:
+	using default_time_point = std::chrono::time_point<default_clock>;
+public:
+	KeyState() = default;
 	KeyState(const KeyState&) = delete;
 	KeyState(KeyState&&) = delete;
 	KeyState& operator=(const KeyState&) = delete;
 	KeyState& operator=(KeyState&&) = delete;
 	bool update() noexcept;
+private:
+	bool flush_stresam(default_time_point timeout) noexcept;
+public:
 	bool flush() noexcept;
+	bool flush(default_time_point wait) noexcept;
+	template<
+		typename Rep, typename Period,
+		std::enable_if_t<!std::is_same<std::chrono::time_point<Rep, Period>, default_time_point>{}, std::nullptr_t> = nullptr
+	>
+	bool flush(std::chrono::time_point<Rep, Period> wait) noexcept {
+		return this->flush(std::chrono::time_point_cast<default_time_point>(wait));
+	}
 	bool flush_update() noexcept;
+	bool flush_update(default_time_point wait) noexcept;
+	template<
+		typename Rep, typename Period,
+		std::enable_if_t<!std::is_same<std::chrono::time_point<Rep, Period>, default_time_point>{}, std::nullptr_t> = nullptr
+	>
+	bool flush_update(std::chrono::time_point<Rep, Period> wait) noexcept {
+		return this->flush_update(std::chrono::time_point_cast<default_time_point>(wait));
+	}
 	int operator[](std::size_t n) const noexcept;
 	int at(std::size_t n) const;
 	bool shift() const noexcept;
@@ -52,6 +76,9 @@ public:
 		bool operator()() {
 			return this->key_.get().flush();
 		}
+		bool operator()(default_time_point wait) {
+			return this->key_.get().flush(wait);
+		}
 	};
 	template<> class ExecutorObj<Executor::flush_update_tag> {
 	private:
@@ -66,6 +93,9 @@ public:
 		bool operator()() {
 			return this->key_.get().flush_update();
 		}
+		bool operator()(default_time_point wait) {
+			return this->key_.get().flush_update(wait);
+		}
 	};
 	template<> class ExecutorObj<Executor::none_tag> {
 	public:
@@ -76,9 +106,9 @@ public:
 		ExecutorObj& operator=(ExecutorObj&&) = default;
 		constexpr ExecutorObj(::KeyState&) {}
 		constexpr bool operator()() const { return true; }
+		constexpr bool operator()(default_time_point) { return true; }
 	};
 private:
-	bool flush_stream() noexcept;
 	std::array<int, 256> keystatebuf;
 };
 bool operator!=(const KeyState& l, std::size_t r);

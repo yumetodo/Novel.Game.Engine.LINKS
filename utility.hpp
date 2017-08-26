@@ -25,6 +25,13 @@ int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, ExectorType) noexcept {
 	KeyState::ExecutorObj<ExectorType>{key}();
 	return re;
 }
+template<typename ExectorType, typename Rep, typename Period>
+int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, ExectorType, std::chrono::duration<Rep, Period> flush_timeout) noexcept {
+	const auto t = std::chrono::steady_clock::now();
+	const auto re = legacy::MessageBoxYesNo(lpText);
+	KeyState::ExecutorObj<ExectorType>{key}(t + flush_timeout);
+	return re;
+}
 template<typename OnYesExectorType, typename OnNoExectorType>
 int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, OnYesExectorType, OnNoExectorType) noexcept {
 	const auto re = legacy::MessageBoxYesNo(lpText);
@@ -36,10 +43,29 @@ int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, OnYesExectorType, OnNoExector
 	}
 	return re;
 }
+template<typename OnYesExectorType, typename OnNoExectorType, typename Rep, typename Period>
+int MessageBoxYesNo(LPCTSTR lpText, KeyState& key, OnYesExectorType, OnNoExectorType, std::chrono::duration<Rep, Period> flush_timeout) noexcept {
+	const auto t = std::chrono::steady_clock::now();
+	const auto re = legacy::MessageBoxYesNo(lpText);
+	if (IDYES == re) {
+		KeyState::ExecutorObj<OnYesExectorType>{key}(t + flush_timeout);
+	}
+	else {
+		KeyState::ExecutorObj<OnNoExectorType>{key}(t + flush_timeout);
+	}
+	return re;
+}
 template<typename ExectorType>
 int MessageBoxOk(LPCTSTR lpText, KeyState& key, ExectorType) noexcept {
 	const auto re = legacy::MessageBoxOk(lpText);
 	KeyState::ExecutorObj<ExectorType>{key}();
+	return re;
+}
+template<typename ExectorType, typename Rep, typename Period>
+int MessageBoxOk(LPCTSTR lpText, KeyState& key, ExectorType, std::chrono::duration<Rep, Period> flush_timeout) noexcept {
+	const auto t = std::chrono::steady_clock::now();
+	const auto re = legacy::MessageBoxOk(lpText);
+	KeyState::ExecutorObj<ExectorType>{key}(t + flush_timeout);
 	return re;
 }
 //画面クリア処理関数

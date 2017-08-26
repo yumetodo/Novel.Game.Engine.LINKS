@@ -10,10 +10,7 @@ struct IUnknown;
 #	endif
 #include "DxLib.h"
 #include <limits>
-#include <chrono>
 #include <thread>
-
-KeyState::KeyState() noexcept : keystatebuf() {}
 
 bool KeyState::update() noexcept {
 	char buf[keybufsize];
@@ -26,25 +23,59 @@ bool KeyState::update() noexcept {
 	return true;
 }
 
-bool KeyState::flush() noexcept {
-	if(this->flush_stream()) return false;
-	this->keystatebuf.fill(0);
-	return true;
-}
 bool KeyState::flush_update() noexcept
 {
 	return this->flush() && this->update();
 }
-bool KeyState::flush_stream() noexcept {
+
+bool KeyState::flush_update(default_time_point wait) noexcept {
+	if(!this->flush_stresam(wait) || !this->update()) return false;
+	std::this_thread::sleep_until(wait);
+}
+
+namespace {
+	template<std::size_t size>
+	bool diff_keystatebuf(const char* arr1, const char* arr2) {
+		size_t i;
+		for (i = 0; i < size && !arr1[i] && !arr2[i]; ++i);
+		return (i == size);
+	}
+}
+bool KeyState::flush() noexcept {
 	using namespace std::chrono_literals;
 	char buf[2][keybufsize] = {};
 	for (size_t i = 0; i < this->keystatebuf.size(); ++i) buf[0][i] = 0 != this->keystatebuf[i];
+	this->keystatebuf.fill(0);
 	char* first_p;
 	char* last_p;
-	size_t i;
 	for (first_p = buf[0], last_p = buf[1]; 0 == ProcessMessage() && 0 == DxLib::GetHitKeyStateAll(last_p); std::swap(first_p, last_p)) {
-		for (i = 0; i < keybufsize && !first_p[i] && !last_p[i]; ++i);
-		if (i == keybufsize) return true;
+		if (diff_keystatebuf<keybufsize>(first_p, last_p)) return true;
+		std::this_thread::sleep_for(2ms);
+	}
+	return false;
+}
+
+bool KeyState::flush(default_time_point wait) noexcept {
+	if (this->flush_stresam(wait)) return false;
+	std::this_thread::sleep_until(wait);
+}
+
+bool KeyState::flush_stresam(default_time_point timeout) noexcept
+{
+	using namespace std::chrono_literals;
+	using clock = default_clock;
+	char buf[2][keybufsize] = {};
+	for (size_t i = 0; i < this->keystatebuf.size(); ++i) buf[0][i] = 0 != this->keystatebuf[i];
+	this->keystatebuf.fill(0);
+	char* first_p;
+	char* last_p;
+	for (
+		first_p = buf[0], last_p = buf[1];
+		0 == ProcessMessage() && 0 == DxLib::GetHitKeyStateAll(last_p) && clock::now() < timeout;
+		std::swap(first_p, last_p)
+	) {
+		if (diff_keystatebuf<keybufsize>(first_p, last_p)) return true;
+		if (timeout + 2ms <= clock::now()) return false;
 		std::this_thread::sleep_for(2ms);
 	}
 	return false;

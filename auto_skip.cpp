@@ -25,36 +25,6 @@ void disableSkip() noexcept {
 }
 
 namespace {
-	//既読スキップメッセージ
-	template<typename ExectorType>
-	int SKIP_READ_MESSAGE(KeyState& key, ExectorType t) noexcept {
-		return MessageBoxYesNo("既読スキップを実行しますか？", key, t);
-	}
-	template<typename OnYesExectorType, typename OnNoExectorType>
-	int SKIP_READ_MESSAGE(KeyState& key, OnYesExectorType onYesType, OnNoExectorType onNoType) noexcept {
-		return MessageBoxYesNo("既読スキップを実行しますか？", key, onYesType, onNoType);
-	}
-
-	//オート処理メッセージ
-	template<typename ExectorType>
-	int AUTO_MESSAGE(KeyState& key, ExectorType t) noexcept {
-		return MessageBoxYesNo("オートモードを実行しますか？", key, t);
-	}
-	template<typename OnYesExectorType, typename OnNoExectorType>
-	int AUTO_MESSAGE(KeyState& key, OnYesExectorType onYesType, OnNoExectorType onNoType) noexcept {
-		return MessageBoxYesNo("オートモードを実行しますか？", key, onYesType, onNoType);
-	}
-
-	//オート/スキップ停止処理メッセージ
-	template<typename ExectorType>
-	int AUTO_SKIP_MESSAGE(KeyState& key, ExectorType t) noexcept {
-		return MessageBoxYesNo("スキップ又はオートモードを終了しますか？", key, t);
-	}
-	template<typename OnYesExectorType, typename OnNoExectorType>
-	int AUTO_SKIP_MESSAGE(KeyState& key, OnYesExectorType onYesType, OnNoExectorType onNoType) noexcept {
-		return MessageBoxYesNo("スキップ又はオートモードを終了しますか？", key, onYesType, onNoType);
-	}
-
 	//既読スキップ後の処理(サウンドノベル風)
 	void SKIP_READ_SOUNDNOVEL() noexcept {
 		GAMEMENU_COUNT = true;
@@ -74,7 +44,7 @@ namespace {
 void SKIP_READ_CHECK(KeyState& key) noexcept {
 	const SkipDataConv* conv = reinterpret_cast<const SkipDataConv*>(&TextIgnoredFlags);
 	//既読データ読み込み時の判定
-	if (IDYES == SKIP_READ_MESSAGE(key, KeyState::Executor::flush_update) && 0 < EndFlag && EndFlag <= countof(conv->arr) && 1 == conv->arr[EndFlag - 1]) {
+	if (IDYES == MessageBoxYesNo("既読スキップを実行しますか？", key, KeyState::Executor::flush_update) && 0 < EndFlag && EndFlag <= countof(conv->arr) && 1 == conv->arr[EndFlag - 1]) {
 		skip_auto = Skiptype::skip;
 	}
 	//ショートカットキー時の事後処理
@@ -94,7 +64,7 @@ void SKIP_START(KeyState& key) noexcept {
 }
 //オート処理
 void AUTO_START(KeyState& key) noexcept {
-	if (IDYES == AUTO_MESSAGE(key, KeyState::Executor::flush_update)) {
+	if (IDYES == MessageBoxYesNo("オートモードを実行しますか？", key, KeyState::Executor::flush_update)) {
 		skip_auto = Skiptype::automatic;
 		GAMEMENU_COUNT = true;
 		//サウンドノベル風描画時の処理
@@ -106,7 +76,7 @@ void AUTO_START(KeyState& key) noexcept {
 
 //オート/スキップ停止処理
 void AUTO_SKIP_STOP(KeyState& key) noexcept {
-	if (IDYES == AUTO_SKIP_MESSAGE(key, KeyState::Executor::flush_update)) {
+	if (IDYES == MessageBoxYesNo("スキップ又はオートモードを終了しますか？", key, KeyState::Executor::flush_update)) {
 		skip_auto = Skiptype::off;
 		GAMEMENU_COUNT = true;
 		//サウンドノベル風描画時の処理

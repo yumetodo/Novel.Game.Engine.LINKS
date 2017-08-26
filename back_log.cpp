@@ -17,16 +17,6 @@ namespace {
 	int BACKLOG_HANDLE, BACKLOG[11], BACKLOG_BACKGROUND;
 	int LOG = 1, BACKLOG_COUNT = 1;
 
-	//バックログ参照メッセージ
-	template<typename ExectorType>
-	int backLogMessage(KeyState& key, ExectorType t) noexcept {
-		return MessageBoxYesNo("バックログ画面に移行しますか？", key, t);
-	}
-	template<typename OnYesExectorType, typename OnNoExectorType>
-	int backLogMessage(KeyState& key, OnYesExectorType onYesType, OnNoExectorType onNoType) noexcept {
-		return MessageBoxYesNo("バックログ画面に移行しますか？", key, onYesType, onNoType);
-	}
-
 	//バックログ(キー操作関連)
 	void BACKLOG_KEY_MOVE(KeyState& key) noexcept {
 		key.update();
@@ -60,7 +50,7 @@ namespace {
 //バックログ参照
 void BACKLOG_DRAW(KeyState& key) noexcept {
 	//バックログ参照メッセージ
-	if (IDYES == backLogMessage(key, KeyState::Executor::flush, KeyState::Executor::flush_update)) {
+	if (IDYES == MessageBoxYesNo("バックログ画面に移行しますか？", key, KeyState::Executor::flush, KeyState::Executor::flush_update)) {
 
 		WaitTimer(600);//キー判定消去待ち目的ではない
 
