@@ -888,7 +888,12 @@ void CONFIG(KeyState& key) {
 		//WaitTimer(300);//キー判定消去待ち目的ではない(CONFIG画面描画の遅延処理)
 		using clock = std::chrono::high_resolution_clock;
 		using namespace std::chrono_literals;
-		for (auto t = clock::now(); ProcessMessage() == 0 && key.flush_update(t + 300ms) && Config == true; t = clock::now()) {
+		auto normal_con_f = []() -> bool {
+			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
+		};
+		const auto pre_screen = DxLib::GetDrawScreen();
+		DxLib::SetDrawScreen(DX_SCREEN_BACK);
+		for (auto t = clock::now(); normal_con_f() && key.flush_update(t + 300ms) && Config == true; t = clock::now()) {
 
 			GAME_MENU_CURSOR(Cr, GAME_y);
 
@@ -927,11 +932,8 @@ void CONFIG(KeyState& key) {
 
 			//コンフィグ(キー操作)
 			CONFIG_KEY_MOVE(key);
-
-			//画面クリア処理
-			SCREEN_CLEAR();
 		}
-
+		DxLib::SetDrawScreen(pre_screen);
 		//ショートカットキー時の事後処理
 		SHORTCUT_KEY_DRAW();
 	}
