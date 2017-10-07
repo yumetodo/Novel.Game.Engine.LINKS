@@ -6,6 +6,7 @@
 class KeyState
 {
 public:
+	using buf_elem_type = std::uint32_t;
 	using default_clock = std::chrono::steady_clock;
 private:
 	using default_time_point = std::chrono::time_point<default_clock>;
@@ -38,6 +39,7 @@ public:
 	bool flush_update(std::chrono::time_point<Rep, Period> wait) noexcept {
 		return this->flush_update(std::chrono::time_point_cast<default_time_point>(wait));
 	}
+	bool wait_key_change(const default_time_point wait) noexcept;
 	int operator[](std::size_t n) const noexcept;
 	int at(std::size_t n) const;
 	bool shift() const noexcept;
@@ -112,7 +114,7 @@ public:
 private:
 	//マウス操作とキー操作の情報 true/false
 	std::int32_t* mouse_key_move_;
-	std::array<int, 256> keystatebuf;
+	std::array<buf_elem_type, 256> keystatebuf;
 };
 bool operator!=(const KeyState& l, std::size_t r);
 inline bool operator!=(std::size_t l, const KeyState& r) {

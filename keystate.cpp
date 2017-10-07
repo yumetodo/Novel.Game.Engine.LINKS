@@ -11,16 +11,35 @@ struct IUnknown;
 #include "DxLib.h"
 #include <limits>
 #include <thread>
+#include <type_traits>
+
+namespace {
+	template<
+		typename OnPushdFunc, typename OnNotPushdFunc,
+		std::enable_if_t<
+			std::is_same<KeyState::buf_elem_type, decltype(std::declval<OnPushdFunc>()(std::declval<KeyState::buf_elem_type>()))>::value
+			&& std::is_same<KeyState::buf_elem_type, decltype(std::declval<OnNotPushdFunc>()(std::declval<KeyState::buf_elem_type>()))>::value,
+			std::nullptr_t
+		> = nullptr
+	>
+	bool update_keystatebuf(std::array<KeyState::buf_elem_type, KeyState::keybufsize>& keystatebuf, OnPushdFunc&& on_pushd, OnNotPushdFunc&& on_not_pushd) {
+		char buf[KeyState::keybufsize];
+		auto re = GetHitKeyStateAll(buf);
+		if (0 != re) return false;
+		for (size_t i = 0; i < KeyState::keybufsize; ++i) {
+			if (buf[i] && std::numeric_limits<KeyState::buf_elem_type>::max() != keystatebuf[i]) keystatebuf[i] = on_pushd(keystatebuf[i]);
+			else keystatebuf[i] = on_not_pushd(keystatebuf[i]);
+		}
+		return true;
+	}
+}
 
 bool KeyState::update() noexcept {
-	char buf[keybufsize];
-	auto re = GetHitKeyStateAll(buf);
-	if (0 != re) return false;
-	for (size_t i = 0; i < keybufsize; ++i) {
-		if (buf[i] && std::numeric_limits<int>::max() != this->keystatebuf[i]) ++this->keystatebuf[i];
-		else this->keystatebuf[i] = 0;
-	}
-	return true;
+	return (1 == *this->mouse_key_move_) ? true : update_keystatebuf(
+		this->keystatebuf,
+		[](KeyState::buf_elem_type n) -> KeyState::buf_elem_type { return n + 1; },
+		[](KeyState::buf_elem_type) -> KeyState::buf_elem_type { return 0; }
+	);
 }
 
 bool KeyState::flush_update() noexcept
@@ -85,6 +104,20 @@ bool KeyState::flush_stresam(const default_time_point timeout) noexcept
 		if (timeout <= clock::now()) return true;
 	}
 	return false;
+}
+
+bool KeyState::wait_key_change(const default_time_point wait) noexcept
+{
+	if (1 == *this->mouse_key_move_) return true;
+	using clock = default_clock;
+	this->keystatebuf.fill(0);
+	bool return_not_by_time_check = true;
+	while((return_not_by_time_check = (clock::now() < wait)) && update_keystatebuf(
+		this->keystatebuf,
+		[](KeyState::buf_elem_type n) -> KeyState::buf_elem_type { return (0 == n) ? 1 : n; },
+		[](KeyState::buf_elem_type n) -> KeyState::buf_elem_type { return n; }
+	));
+	return !return_not_by_time_check;
 }
 
 int KeyState::operator[](size_t n) const noexcept {

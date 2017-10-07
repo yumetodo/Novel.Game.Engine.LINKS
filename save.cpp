@@ -10,6 +10,7 @@
 #include "utility.hpp"
 #include "resource_manager.hpp"
 #include "keystate.hpp"
+#include "scoped_screen.hpp"
 #include "GAME.h"
 #include <DxLib.h>
 #include <chrono>
@@ -322,7 +323,7 @@ namespace {
 
 	//セーブデータ・ロード画面ループ
 	void SAVEDATA_LOAD_LOOP(KeyState& key) {
-
+		scoped_screen screen(DX_SCREEN_FRONT);
 		while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 
 			//背景描画

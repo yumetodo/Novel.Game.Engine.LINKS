@@ -893,7 +893,7 @@ void CONFIG(KeyState& key) {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); normal_con_f() && key.flush_update(t + 300ms) && Config == true; t = clock::now()) {
+		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && Config == true; t = clock::now()) {
 
 			GAME_MENU_CURSOR(Cr, GAME_y);
 

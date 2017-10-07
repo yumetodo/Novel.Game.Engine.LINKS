@@ -14,6 +14,7 @@
 #include "save.hpp"
 #include "auto_skip.hpp"
 #include "keystate.hpp"
+#include "scoped_screen.hpp"
 
 //DXライブラリ初期化前処理
 void DXLib_PREP() {
@@ -62,7 +63,7 @@ void DXLib_POST_PREP() {
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
 	//ゲームリンクスロゴ表示
-	PlayMovie("DATA/MOVIE/OP.wmv", 1, DX_MOVIEPLAYTYPE_BCANCEL);
+	//PlayMovie("DATA/MOVIE/OP.wmv", 1, DX_MOVIEPLAYTYPE_BCANCEL);
 
 	//OP画面の削除
 	ClearDrawScreen();
@@ -123,9 +124,13 @@ void TITLE_MENU(KeyState& key) {
 	if (EndFlag == 99) {
 
 		GAMEMENU_COUNT = false;
-
-		while (ProcessMessage() == 0 && key.update() && EndFlag == 99) {
-
+		using clock = std::chrono::high_resolution_clock;
+		using namespace std::chrono_literals;
+		auto normal_con_f = []() -> bool {
+			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
+		};
+		scoped_screen screen(DX_SCREEN_BACK);
+		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && EndFlag == 99; t = clock::now()) {
 			//タイトル表示
 			DrawGraph(0, 0, TITLE, TRUE);
 
@@ -140,9 +145,6 @@ void TITLE_MENU(KeyState& key) {
 
 			//キー操作関連
 			TITLE_MENU_KEY_MOVE(key);
-
-			//画面クリア処理
-			SCREEN_CLEAR();
 
 			//タイトルメニュー(選択処理)
 			TITLE_MENU_CHOICE(key);
