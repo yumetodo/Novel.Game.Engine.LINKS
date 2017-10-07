@@ -8,11 +8,10 @@ class KeyState
 public:
 	using buf_elem_type = std::uint32_t;
 	using default_clock = std::chrono::steady_clock;
-private:
 	using default_time_point = std::chrono::time_point<default_clock>;
 public:
 	KeyState() = delete;
-	KeyState(std::int32_t* mouse_key_move) : mouse_key_move_(mouse_key_move), keystatebuf() {}
+	KeyState(const std::int32_t* mouse_key_move) : mouse_key_move_(mouse_key_move), keystatebuf() {}
 	KeyState(const KeyState&) = delete;
 	KeyState(KeyState&&) = delete;
 	KeyState& operator=(const KeyState&) = delete;
@@ -65,57 +64,58 @@ public:
 		static constexpr flush_update_tag flush_update = {};
 		static constexpr none_tag none = {};
 	};
-	template<typename ExecutorType> struct ExecutorObj;
-	template<> class ExecutorObj<Executor::flush_tag> {
-	private:
-		std::reference_wrapper<::KeyState> key_;
-	public:
-		ExecutorObj() = delete;
-		ExecutorObj(const ExecutorObj&) = delete;
-		ExecutorObj(ExecutorObj&&) = default;
-		ExecutorObj& operator=(const ExecutorObj&) = delete;
-		ExecutorObj& operator=(ExecutorObj&&) = default;
-		ExecutorObj(::KeyState& key) : key_(key) {}
-		bool operator()() {
-			return this->key_.get().flush();
-		}
-		bool operator()(default_time_point wait) {
-			return this->key_.get().flush(wait);
-		}
-	};
-	template<> class ExecutorObj<Executor::flush_update_tag> {
-	private:
-		std::reference_wrapper<::KeyState> key_;
-	public:
-		ExecutorObj() = delete;
-		ExecutorObj(const ExecutorObj&) = delete;
-		ExecutorObj(ExecutorObj&&) = default;
-		ExecutorObj& operator=(const ExecutorObj&) = delete;
-		ExecutorObj& operator=(ExecutorObj&&) = default;
-		ExecutorObj(::KeyState& key) : key_(key) {}
-		bool operator()() {
-			return this->key_.get().flush_update();
-		}
-		bool operator()(default_time_point wait) {
-			return this->key_.get().flush_update(wait);
-		}
-	};
-	template<> class ExecutorObj<Executor::none_tag> {
-	public:
-		ExecutorObj() = delete;
-		ExecutorObj(const ExecutorObj&) = delete;
-		ExecutorObj(ExecutorObj&&) = default;
-		ExecutorObj& operator=(const ExecutorObj&) = delete;
-		ExecutorObj& operator=(ExecutorObj&&) = default;
-		constexpr ExecutorObj(::KeyState&) {}
-		constexpr bool operator()() const { return true; }
-		constexpr bool operator()(default_time_point) { return true; }
-	};
 private:
 	//マウス操作とキー操作の情報 true/false
-	std::int32_t* mouse_key_move_;
+	const std::int32_t* mouse_key_move_;
 	std::array<buf_elem_type, 256> keystatebuf;
 };
+template<typename ExecutorType> class KeyStateExecutorObj;
+template<> class KeyStateExecutorObj<KeyState::Executor::flush_tag> {
+private:
+	std::reference_wrapper<::KeyState> key_;
+public:
+	KeyStateExecutorObj() = delete;
+	KeyStateExecutorObj(const KeyStateExecutorObj&) = delete;
+	KeyStateExecutorObj(KeyStateExecutorObj&&) = default;
+	KeyStateExecutorObj& operator=(const KeyStateExecutorObj&) = delete;
+	KeyStateExecutorObj& operator=(KeyStateExecutorObj&&) = default;
+	KeyStateExecutorObj(::KeyState& key) : key_(key) {}
+	bool operator()() {
+		return this->key_.get().flush();
+	}
+	bool operator()(KeyState::default_time_point wait) {
+		return this->key_.get().flush(wait);
+	}
+};
+template<> class KeyStateExecutorObj<KeyState::Executor::flush_update_tag> {
+private:
+	std::reference_wrapper<::KeyState> key_;
+public:
+	KeyStateExecutorObj() = delete;
+	KeyStateExecutorObj(const KeyStateExecutorObj&) = delete;
+	KeyStateExecutorObj(KeyStateExecutorObj&&) = default;
+	KeyStateExecutorObj& operator=(const KeyStateExecutorObj&) = delete;
+	KeyStateExecutorObj& operator=(KeyStateExecutorObj&&) = default;
+	KeyStateExecutorObj(::KeyState& key) : key_(key) {}
+	bool operator()() {
+		return this->key_.get().flush_update();
+	}
+	bool operator()(KeyState::default_time_point wait) {
+		return this->key_.get().flush_update(wait);
+	}
+};
+template<> class KeyStateExecutorObj<KeyState::Executor::none_tag> {
+public:
+	KeyStateExecutorObj() = delete;
+	KeyStateExecutorObj(const KeyStateExecutorObj&) = delete;
+	KeyStateExecutorObj(KeyStateExecutorObj&&) = default;
+	KeyStateExecutorObj& operator=(const KeyStateExecutorObj&) = delete;
+	KeyStateExecutorObj& operator=(KeyStateExecutorObj&&) = default;
+	constexpr KeyStateExecutorObj(::KeyState&) {}
+	constexpr bool operator()() const { return true; }
+	constexpr bool operator()(KeyState::default_time_point) { return true; }
+};
+
 bool operator!=(const KeyState& l, std::size_t r);
 inline bool operator!=(std::size_t l, const KeyState& r) {
 	return r != l;

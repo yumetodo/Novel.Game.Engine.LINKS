@@ -297,7 +297,7 @@ namespace {
 	//マウス操作(ゲームメニュー)
 	void Mouse_Move_GAME(int MouseY) {
 		//ゲームメニュー
-		if (EndFlag == 99 || EndFlag != 99 && false == GAMEMENU_COUNT && Config == false) {
+		if (EndFlag == 99 || (false == GAMEMENU_COUNT && Config == false)) {
 			GAME_y = (MouseY <= 59) ? 30
 				: (MouseY <= 89) ? 60
 				: (MouseY <= 119) ? 90
@@ -635,7 +635,7 @@ namespace {
 	//コンフィグ(BGM音量調節)
 	void BGM_VOL_CHANGE(const KeyState& key) {
 		//ＢＧＭ音量調整
-		if (GAME_y == game_menu_base_pos_y && key.right() || GAME_y == game_menu_base_pos_y && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y && (key.right() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			ConfigData.bgm_vol += 10;
 			ConfigData.bgm_vol_count += 1;
 			if (ConfigData.bgm_vol_count >= 10) {
@@ -644,7 +644,7 @@ namespace {
 			}
 		}
 
-		if (GAME_y == game_menu_base_pos_y && key.left() || GAME_y == game_menu_base_pos_y && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y && (key.left() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0))) {
 			ConfigData.bgm_vol -= 10;
 			ConfigData.bgm_vol_count -= 1;
 			if (ConfigData.bgm_vol_count <= 0) {
@@ -658,7 +658,7 @@ namespace {
 	//コンフィグ(SE音量調整)
 	void SE_VOL_CHANGE(const KeyState& key) {
 		//ＳＥ音量調整
-		if (GAME_y == game_menu_base_pos_y * 2 && key.right() || GAME_y == game_menu_base_pos_y * 2 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 2 && (key.right() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			ConfigData.se_vol += 10;
 			ConfigData.se_vol_count += 1;
 			if (ConfigData.se_vol_count >= 10) {
@@ -666,7 +666,7 @@ namespace {
 				ConfigData.se_vol_count = 10;
 			}
 		}
-		if (GAME_y == game_menu_base_pos_y * 2 && key.left() || GAME_y == game_menu_base_pos_y * 2 && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 2 && (key.left() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0))) {
 			ConfigData.se_vol -= 10;
 			ConfigData.se_vol_count -= 1;
 			if (ConfigData.se_vol_count <= 0) {
@@ -679,7 +679,7 @@ namespace {
 	//コンフィグ(オート速度調整)
 	void AUTO_SPEED_CHANGE(const KeyState& key) {
 		//オート速度調整
-		if (GAME_y == game_menu_base_pos_y * 3 && key.right() || GAME_y == game_menu_base_pos_y * 3 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 3 && (key.right() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			ConfigData.auto_speed += 10;
 			ConfigData.auto_speed_count += 1;
 			if (ConfigData.auto_speed_count >= 10) {
@@ -687,7 +687,7 @@ namespace {
 				ConfigData.auto_speed_count = 10;
 			}
 		}
-		if (GAME_y == game_menu_base_pos_y * 3 && key.left() || GAME_y == game_menu_base_pos_y * 3 && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 3 && (key.left() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0))) {
 			ConfigData.auto_speed -= 10;
 			ConfigData.auto_speed_count -= 1;
 			if (ConfigData.auto_speed_count <= 0) {
@@ -700,7 +700,7 @@ namespace {
 	//コンフィグ(スキップ速度調整)
 	void SKIP_SPEED_CHANGE(const KeyState& key) {
 		//スキップ速度調整
-		if (GAME_y == game_menu_base_pos_y * 4 && key.right() || GAME_y == game_menu_base_pos_y * 4 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 4 && (key.right() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			ConfigData.skip_speed += 10;
 			ConfigData.skip_speed_count += 1;
 			if (ConfigData.skip_speed_count >= 10) {
@@ -708,7 +708,7 @@ namespace {
 				ConfigData.skip_speed_count = 10;
 			}
 		}
-		if (GAME_y == game_menu_base_pos_y * 4 && key.left() || GAME_y == game_menu_base_pos_y * 4 && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 4 && (key.left() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0))) {
 			ConfigData.skip_speed -= 10;
 			ConfigData.skip_speed_count -= 1;
 			if (ConfigData.skip_speed_count <= 0) {
@@ -721,7 +721,7 @@ namespace {
 	//コンフィグ(文字描画)
 	void STRING_SPEED_CHANGE(const KeyState& key) {
 		//文字描画速度調整
-		if (GAME_y == game_menu_base_pos_y * 5 && key.right() || GAME_y == game_menu_base_pos_y * 5 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 5 && (key.right() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			ConfigData.string_speed += 10;
 			ConfigData.string_speed_count += 1;
 			if (ConfigData.string_speed_count >= 10) {
@@ -729,7 +729,7 @@ namespace {
 				ConfigData.string_speed_count = 10;
 			}
 		}
-		if (GAME_y == game_menu_base_pos_y * 5 && key.left() || GAME_y == game_menu_base_pos_y * 5 && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 5 && (key.left() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0))) {
 			ConfigData.string_speed -= 10;
 			ConfigData.string_speed_count -= 1;
 			if (ConfigData.string_speed_count <= 0) {
@@ -742,10 +742,10 @@ namespace {
 	//コンフィグ(サウンドノベル風とウインドウ風)
 	void SOUNDNOVEL_WINDOWNOVEL_CHANGE(const KeyState& key) {
 		//サウンドノベル風とウインドウ風の切り替え
-		if (GAME_y == game_menu_base_pos_y * 6 && key.right() || GAME_y == game_menu_base_pos_y * 6 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 6 && (key.right() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			ConfigData.soundnovel_winownovel = 0;
 		}
-		if (GAME_y == game_menu_base_pos_y * 6 && key.left() || GAME_y == game_menu_base_pos_y * 6 && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 6 && (key.left() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0))) {
 			ConfigData.soundnovel_winownovel = 1;
 		}
 	}
@@ -753,12 +753,12 @@ namespace {
 	//非アクティブ時の処理設定
 	void WINDOWACTIVE(const KeyState& key) {
 		//非アクティブ時の処理の切り替え
-		if (GAME_y == game_menu_base_pos_y * 7 && key.right() || GAME_y == game_menu_base_pos_y * 7 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 7 && (key.right() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			WindowActive = false;
 			//非アクティブ状態ではゲームを実行しない
 			SetAlwaysRunFlag(WindowActive);
 		}
-		if (GAME_y == game_menu_base_pos_y * 7 && key.left() || GAME_y == game_menu_base_pos_y * 7 && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 7 && (key.left() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0))) {
 			WindowActive = true;
 			//非アクティブ状態でもゲームを実行
 			SetAlwaysRunFlag(WindowActive);
@@ -768,12 +768,12 @@ namespace {
 	//コンフィグ(マウス/キー操作)
 	void MOUSE_KEY_MOVE(KeyState& key) {
 		//マウス操作を有効に
-		if (GAME_y == game_menu_base_pos_y * 8 && key.right() || GAME_y == game_menu_base_pos_y * 8 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 8 && (key.right() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			ConfigData.mouse_key_move = 1;
 			key.flush();
 		}
 		//キー操作を有効に
-		if (GAME_y == game_menu_base_pos_y * 8 && key.left() || GAME_y == game_menu_base_pos_y * 8 && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 8 && (key.left() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0))) {
 			ConfigData.mouse_key_move = 0;
 		}
 	}
@@ -866,7 +866,7 @@ namespace {
 	//コンフィグ(タイトル/ゲームメニューへ戻る)
 	void CONFIG_TITLE_BACK(KeyState& key) {
 		//タイトルに戻る/ゲームメニューに戻る
-		if (GAME_y == game_menu_base_pos_y * 9 && key.enter() || GAME_y == game_menu_base_pos_y * 9 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
+		if (GAME_y == game_menu_base_pos_y * 9 && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 			if (IDYES == MessageBoxYesNo("戻りますか？", key, KeyState::Executor::flush_update)) {
 
 				ClearDrawScreen();

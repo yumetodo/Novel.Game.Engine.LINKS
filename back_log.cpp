@@ -21,10 +21,10 @@ namespace {
 	void BACKLOG_KEY_MOVE(KeyState& key) noexcept {
 		key.update();
 		//バックログ（キー操作関連）
-		if (LOG != 10 && key.up() || LOG != 10 && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
+		if (LOG != 10 && (key.up() ||(GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 			LOG++;
 		}
-		if (LOG != 1 && key.down() || LOG != 1 && (GetMouseInput() & MOUSE_INPUT_RIGHT) != 0) {
+		if (LOG != 1 && (key.down() ||(GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
 			LOG--;
 		}
 		key.flush();
@@ -69,7 +69,7 @@ void BACKLOG_DRAW(KeyState& key) noexcept {
 
 			//終了処理
 			key.update();
-			if (key.enter() || (GetMouseInput() & MOUSE_INPUT_RIGHT) != 0 && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0) {
+			if (key.enter() || ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0 && (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				ClearDrawScreen();
 
 				DeleteGraph(BACKLOG[0]);

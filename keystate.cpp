@@ -112,7 +112,7 @@ bool KeyState::wait_key_change(const default_time_point wait) noexcept
 	using clock = default_clock;
 	this->keystatebuf.fill(0);
 	bool return_not_by_time_check = true;
-	while((return_not_by_time_check = (clock::now() < wait)) && update_keystatebuf(
+	while(true == (return_not_by_time_check = (clock::now() < wait)) && update_keystatebuf(
 		this->keystatebuf,
 		[](KeyState::buf_elem_type n) -> KeyState::buf_elem_type { return (0 == n) ? 1 : n; },
 		[](KeyState::buf_elem_type n) -> KeyState::buf_elem_type { return n; }

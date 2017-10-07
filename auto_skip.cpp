@@ -24,22 +24,6 @@ void disableSkip() noexcept {
 	skip_auto = Skiptype::off;
 }
 
-namespace {
-	//既読スキップ後の処理(サウンドノベル風)
-	void SKIP_READ_SOUNDNOVEL() noexcept {
-		GAMEMENU_COUNT = true;
-		//サウンドノベル風描画時の処理
-		SOUNDNOVEL();
-	}
-
-	//既読スキップ後の処理(ウインドウ風)
-	void SKIP_READ_WINDOWNOVEL() noexcept {
-		GAMEMENU_COUNT = true;
-		//既読スキップ後の処理(ウインドウ風)
-		WINDOWNOVEL();
-	}
-
-}
 //既読スキップ判定
 void SKIP_READ_CHECK(KeyState& key) noexcept {
 	const SkipDataConv* conv = reinterpret_cast<const SkipDataConv*>(&TextIgnoredFlags);

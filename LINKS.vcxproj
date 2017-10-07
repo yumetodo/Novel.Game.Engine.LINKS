@@ -226,6 +226,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='clang_debug|Win32'">
     <ClCompile>
       <DebugInformationFormat>FullDebug</DebugInformationFormat>
+      <CppLanguageStandard>c++1y</CppLanguageStandard>
+      <AdditionalIncludeDirectories>C:\DXlib;$(DXLIB_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='clang_release|Win32'">
@@ -236,6 +238,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='clang_debug|x64'">
     <ClCompile>
       <DebugInformationFormat>FullDebug</DebugInformationFormat>
+      <CppLanguageStandard>c++1y</CppLanguageStandard>
+      <AdditionalIncludeDirectories>C:\DXlib;$(DXLIB_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='clang_release|x64'">
