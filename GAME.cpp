@@ -766,10 +766,11 @@ namespace {
 	}
 
 	//コンフィグ(マウス/キー操作)
-	void MOUSE_KEY_MOVE(const KeyState& key) {
+	void MOUSE_KEY_MOVE(KeyState& key) {
 		//マウス操作を有効に
 		if (GAME_y == game_menu_base_pos_y * 8 && key.right() || GAME_y == game_menu_base_pos_y * 8 && ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 			ConfigData.mouse_key_move = 1;
+			key.flush();
 		}
 		//キー操作を有効に
 		if (GAME_y == game_menu_base_pos_y * 8 && key.left() || GAME_y == game_menu_base_pos_y * 8 && ((GetMouseInput() & MOUSE_INPUT_RIGHT) != 0)) {
