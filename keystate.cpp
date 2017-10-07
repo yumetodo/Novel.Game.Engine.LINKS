@@ -72,12 +72,13 @@ bool KeyState::flush_stresam(const default_time_point timeout) noexcept
 	char* last_p;
 	for (
 		first_p = buf[0], last_p = buf[1];
-		0 == ProcessMessage() && 0 == DxLib::GetHitKeyStateAll(last_p) && clock::now() < timeout;
+		0 == ProcessMessage() && 0 == DxLib::GetHitKeyStateAll(last_p);
 		std::swap(first_p, last_p)
 	) {
 		if (diff_keystatebuf<keybufsize>(first_p, last_p)) return true;
-		if (timeout + 2ms <= clock::now()) return false;
+		if (timeout + 2ms <= clock::now()) return true;
 		std::this_thread::sleep_for(2ms);
+		if (timeout <= clock::now()) return true;
 	}
 	return false;
 }
