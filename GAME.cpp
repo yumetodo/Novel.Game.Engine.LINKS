@@ -20,6 +20,7 @@
 #include "save.hpp"
 #include "auto_skip.hpp"
 #include "keystate.hpp"
+#include "scoped_screen.hpp"
 #include "fmt/fmt/format.h"
 
 // 文字列描画の位置
@@ -891,8 +892,7 @@ void CONFIG(KeyState& key) {
 		auto normal_con_f = []() -> bool {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
-		const auto pre_screen = DxLib::GetDrawScreen();
-		DxLib::SetDrawScreen(DX_SCREEN_BACK);
+		scoped_screen screen(DX_SCREEN_BACK);
 		for (auto t = clock::now(); normal_con_f() && key.flush_update(t + 300ms) && Config == true; t = clock::now()) {
 
 			GAME_MENU_CURSOR(Cr, GAME_y);
@@ -933,7 +933,6 @@ void CONFIG(KeyState& key) {
 			//コンフィグ(キー操作)
 			CONFIG_KEY_MOVE(key);
 		}
-		DxLib::SetDrawScreen(pre_screen);
 		//ショートカットキー時の事後処理
 		SHORTCUT_KEY_DRAW();
 	}

@@ -55,6 +55,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource_manager.hpp" />
     <ClInclude Include="save.hpp" />
+    <ClInclude Include="scoped_screen.hpp" />
     <ClInclude Include="utility.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -74,6 +74,9 @@
     <ClInclude Include="keystate.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="scoped_screen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LINKS.rc">
