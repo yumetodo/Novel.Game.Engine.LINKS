@@ -31,6 +31,7 @@ bool KeyState::flush_update() noexcept
 bool KeyState::flush_update(default_time_point wait) noexcept {
 	if(!this->flush_stresam(wait) || !this->update()) return false;
 	std::this_thread::sleep_until(wait);
+	return true;
 }
 
 namespace {
@@ -60,7 +61,7 @@ bool KeyState::flush(default_time_point wait) noexcept {
 	std::this_thread::sleep_until(wait);
 }
 
-bool KeyState::flush_stresam(default_time_point timeout) noexcept
+bool KeyState::flush_stresam(const default_time_point timeout) noexcept
 {
 	using namespace std::chrono_literals;
 	using clock = default_clock;

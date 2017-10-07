@@ -17,7 +17,7 @@ public:
 	KeyState& operator=(KeyState&&) = delete;
 	bool update() noexcept;
 private:
-	bool flush_stresam(default_time_point timeout) noexcept;
+	bool flush_stresam(const default_time_point timeout) noexcept;
 public:
 	bool flush() noexcept;
 	bool flush(default_time_point wait) noexcept;

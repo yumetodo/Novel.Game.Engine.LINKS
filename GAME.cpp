@@ -885,9 +885,10 @@ void CONFIG(KeyState& key) {
 
 		ClearDrawScreen();
 
-		WaitTimer(300);//キー判定消去待ち目的ではない(CONFIG画面描画の遅延処理)
-
-		while (ProcessMessage() == 0 && key.update() && Config == 1) {
+		//WaitTimer(300);//キー判定消去待ち目的ではない(CONFIG画面描画の遅延処理)
+		using clock = std::chrono::high_resolution_clock;
+		using namespace std::chrono_literals;
+		for (auto t = clock::now(); ProcessMessage() == 0 && key.flush_update(t + 300ms) && Config == 1; t = clock::now()) {
 
 			GAME_MENU_CURSOR(Cr, GAME_y);
 
