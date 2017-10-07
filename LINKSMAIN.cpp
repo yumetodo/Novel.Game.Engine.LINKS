@@ -233,8 +233,9 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 	}
 
 	//DXライブラリ初期化後処理
+	//Initialize ConfigData
 	DXLib_POST_PREP();
-	KeyState keystate = {};
+	KeyState keystate(&ConfigData.mouse_key_move);
 
 	while (ProcessMessage() == 0 && EndFlag != 99999) {
 

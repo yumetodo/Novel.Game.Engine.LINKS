@@ -10,7 +10,8 @@ public:
 private:
 	using default_time_point = std::chrono::time_point<default_clock>;
 public:
-	KeyState() = default;
+	KeyState() = delete;
+	KeyState(std::int32_t* mouse_key_move) : mouse_key_move_(mouse_key_move), keystatebuf() {}
 	KeyState(const KeyState&) = delete;
 	KeyState(KeyState&&) = delete;
 	KeyState& operator=(const KeyState&) = delete;
@@ -109,6 +110,8 @@ public:
 		constexpr bool operator()(default_time_point) { return true; }
 	};
 private:
+	//マウス操作とキー操作の情報 true/false
+	std::int32_t* mouse_key_move_;
 	std::array<int, 256> keystatebuf;
 };
 bool operator!=(const KeyState& l, std::size_t r);

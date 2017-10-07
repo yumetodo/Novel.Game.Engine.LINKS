@@ -25,10 +25,11 @@ bool KeyState::update() noexcept {
 
 bool KeyState::flush_update() noexcept
 {
-	return this->flush() && this->update();
+	return (1 == *this->mouse_key_move_) ? true : this->flush() && this->update();
 }
 
 bool KeyState::flush_update(default_time_point wait) noexcept {
+	if (1 == *this->mouse_key_move_) return true;
 	if(!this->flush_stresam(wait) || !this->update()) return false;
 	std::this_thread::sleep_until(wait);
 	return true;
@@ -43,6 +44,7 @@ namespace {
 	}
 }
 bool KeyState::flush() noexcept {
+	if (1 == *this->mouse_key_move_) return true;
 	using namespace std::chrono_literals;
 	char buf[2][keybufsize] = {};
 	for (size_t i = 0; i < this->keystatebuf.size(); ++i) buf[0][i] = 0 != this->keystatebuf[i];
@@ -57,8 +59,10 @@ bool KeyState::flush() noexcept {
 }
 
 bool KeyState::flush(default_time_point wait) noexcept {
+	if (1 == *this->mouse_key_move_) return true;
 	if (this->flush_stresam(wait)) return false;
 	std::this_thread::sleep_until(wait);
+	return true;
 }
 
 bool KeyState::flush_stresam(const default_time_point timeout) noexcept
