@@ -89,7 +89,7 @@ ConfigData_t ConfigData = {
 	/*soundnovel_winownovel :*/0,
 	/*mouse_key_move        :*/1
 };
-static int Config = 0;
+static bool Config = false;
 
 //スクリーンショット用変数
 static int SCREENSHOT_COUNT = 0;
@@ -296,7 +296,7 @@ namespace {
 	//マウス操作(ゲームメニュー)
 	void Mouse_Move_GAME(int MouseY) {
 		//ゲームメニュー
-		if (EndFlag == 99 || EndFlag != 99 && false == GAMEMENU_COUNT && Config == 0) {
+		if (EndFlag == 99 || EndFlag != 99 && false == GAMEMENU_COUNT && Config == false) {
 			GAME_y = (MouseY <= 59) ? 30
 				: (MouseY <= 89) ? 60
 				: (MouseY <= 119) ? 90
@@ -324,7 +324,7 @@ namespace {
 	void Mouse_Move_CONFIG(int MouseY) {
 
 		//コンフィグ画面
-		if (Config == 1) {
+		if (Config == true) {
 			GAME_y = (MouseY <= 59) ? 30
 				: (MouseY <= 89) ? 60
 				: (MouseY <= 119) ? 90
@@ -869,7 +869,7 @@ namespace {
 
 				ClearDrawScreen();
 				GAME_y = game_menu_base_pos_y;
-				Config = 0;
+				Config = false;
 			}
 		}
 	}
@@ -879,7 +879,7 @@ namespace {
 void CONFIG(KeyState& key) {
 	if (IDYES == MessageBoxYesNo("設定を変更しますか？", key, KeyState::Executor::flush, KeyState::Executor::flush_update)) {
 
-		Config = 1;
+		Config = true;
 
 		GAME_y = game_menu_base_pos_y;
 
@@ -888,7 +888,7 @@ void CONFIG(KeyState& key) {
 		//WaitTimer(300);//キー判定消去待ち目的ではない(CONFIG画面描画の遅延処理)
 		using clock = std::chrono::high_resolution_clock;
 		using namespace std::chrono_literals;
-		for (auto t = clock::now(); ProcessMessage() == 0 && key.flush_update(t + 300ms) && Config == 1; t = clock::now()) {
+		for (auto t = clock::now(); ProcessMessage() == 0 && key.flush_update(t + 300ms) && Config == true; t = clock::now()) {
 
 			GAME_MENU_CURSOR(Cr, GAME_y);
 
