@@ -11,16 +11,22 @@
 *.userprefs
 
 # Build results
+clang_[Dd]ebug/
 [Dd]ebug/
 [Dd]ebugPublic/
+clang_[Rr]elease/
 [Rr]elease/
 [Rr]eleases/
-x64/
-x86/
+[Xx]64/
+[Xx]86/
+[Bb]uild/
 bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+
+# Roslyn cache directories
+*.ide/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -69,6 +75,8 @@ artifacts/
 *.pidb
 *.svclog
 *.scc
+*.tlog
+*.lastbuildstate
 
 # Chutzpah Test files
 _Chutzpah*
@@ -171,6 +179,9 @@ csx/
 ecf/
 rcf/
 
+# Microsoft Azure ApplicationInsights config file
+ApplicationInsights.config
+
 # Windows Store app package directories and files
 AppPackages/
 BundleArtifacts/
@@ -184,7 +195,9 @@ _pkginfo.txt
 !*.[Cc]ache/
 
 # Others
+sql/
 ClientBin/
+[Ss]tyle[Cc]op.*
 ~$*
 *~
 *.dbmdl
@@ -242,12 +255,61 @@ FakesAssemblies/
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
 
+# LightSwitch generated files
+GeneratedArtifacts/
+_Pvt_Extensions/
+ModelManifest.xml
+
 # Paket dependency manager
 .paket/paket.exe
 paket-files/
 
 # FAKE - F# Make
 .fake/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# =========================
+# Operating System Files
+# =========================
+
+# OSX
+# =========================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
 
 # JetBrains Rider
 .idea/
