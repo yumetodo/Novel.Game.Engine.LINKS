@@ -2,11 +2,13 @@
 #include <array>
 #include <functional>
 #include <chrono>
+#include <limits>
 
 class KeyState
 {
 public:
 	using buf_elem_type = std::uint32_t;
+	using buf_elem_limit = std::numeric_limits<buf_elem_type>;
 	using default_clock = std::chrono::steady_clock;
 	using default_time_point = std::chrono::time_point<default_clock>;
 public:
@@ -18,6 +20,7 @@ public:
 	KeyState& operator=(KeyState&&) = delete;
 	bool update() noexcept;
 private:
+	void clear_buf() noexcept;
 	bool flush_stresam(const default_time_point timeout) noexcept;
 public:
 	bool flush() noexcept;
@@ -67,7 +70,7 @@ public:
 private:
 	//マウス操作とキー操作の情報 true/false
 	const std::int32_t* mouse_key_move_;
-	std::array<buf_elem_type, 256> keystatebuf;
+	std::array<buf_elem_type, keybufsize> keystatebuf;
 };
 template<typename ExecutorType> class KeyStateExecutorObj;
 template<> class KeyStateExecutorObj<KeyState::Executor::flush_tag> {
