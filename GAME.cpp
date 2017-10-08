@@ -1466,7 +1466,7 @@ namespace {
 		if (ConfigData.soundnovel_winownovel == 1) {
 			char CHARACTER_NAME[10] = {};
 			//キャラクター名を読み込む
-			assert(0 < CP && std::size_t(CP + 10) < String[SP].size());
+			assert(0 < CP && std::size_t(CP + 9) < String[SP].size());
 			memcpy(CHARACTER_NAME, &String[SP][CP + 1], 9);
 			CHARACTER_NAME[9] = '\0';
 
@@ -1619,7 +1619,7 @@ namespace {
 
 	//コメント処理
 	void COMMENT() {
-
+		assert(std::size_t(CP) < String[SP].size());
 		switch (String[SP][CP]) {
 
 		case '/':
@@ -1633,13 +1633,14 @@ namespace {
 
 //スクリプトタグ処理(メイン)関数
 int SCRIPT_OUTPUT(KeyState& key) {
-	assert(std::size_t(CP + 1) < String[SP].size());
+	assert(std::size_t(CP) < String[SP].size());
 	switch (String[SP][CP])
 	{
 
 		//キャラクター描画処理
 	case 'C':
 		CP++;
+		assert(std::size_t(CP + 1) < String[SP].size());
 		if (charactor.select(String[SP][CP], String[SP][CP + 1])) CP++;
 		//キャラクター描画
 		SCRIPT_OUTPUT_CHARACTER_DRAW();
@@ -1648,6 +1649,7 @@ int SCRIPT_OUTPUT(KeyState& key) {
 		//背景描画処理
 	case 'B':
 		CP++;
+		assert(std::size_t(CP + 1) < String[SP].size());
 		if (background.select(String[SP][CP], String[SP][CP + 1])) CP++;
 		//背景描画
 		SCRIPT_OUTPUT_BACKGROUND();
@@ -1656,6 +1658,7 @@ int SCRIPT_OUTPUT(KeyState& key) {
 		//BGM再生処理
 	case 'M':
 		CP++;
+		assert(std::size_t(CP + 1) < String[SP].size());
 		backgroundMusic.stop();
 		if (backgroundMusic.select(String[SP][CP], String[SP][CP + 1])) CP++;
 		//BGM再生処理
@@ -1665,6 +1668,7 @@ int SCRIPT_OUTPUT(KeyState& key) {
 		//SE再生処理
 	case 'S':
 		CP++;
+		assert(std::size_t(CP + 1) < String[SP].size());
 		soundEffect.stop();
 		if (soundEffect.select(String[SP][CP], String[SP][CP + 1])) CP++;
 		//SE再生処理
