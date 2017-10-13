@@ -30,6 +30,11 @@ void SKIP_READ_CHECK(KeyState& key) noexcept {
 	//既読データ読み込み時の判定
 	if (IDYES == MessageBoxYesNo("既読スキップを実行しますか？", key, KeyState::Executor::flush_update) && 0 < EndFlag && EndFlag <= countof(conv->arr) && 1 == conv->arr[EndFlag - 1]) {
 		skip_auto = Skiptype::skip;
+		GAMEMENU_COUNT = true;
+		//サウンドノベル風描画時の処理
+		SOUNDNOVEL();
+		//ウインドウ風描画時の処理
+		WINDOWNOVEL();
 	}
 	//ショートカットキー時の事後処理
 	SHORTCUT_KEY_DRAW();
