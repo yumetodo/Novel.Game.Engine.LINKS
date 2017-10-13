@@ -1893,6 +1893,7 @@ void SHORTCUT_KEY(KeyState& key) {
 	if (EndFlag != 99 && key == KEY_INPUT_F4) {
 		SHORTCUT_KEY_FLAG = 1;
 		GAMEMENU_COUNT = false;
+		SKIP_READ_LOAD();
 		SKIP_READ_CHECK(key);
 	}
 
