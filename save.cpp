@@ -543,7 +543,7 @@ void SCRIPT_OUTPUT_CHOICE_LOOP_SAVESNAP() {
 //マウス操作(セーブ画面関連)
 void Mouse_Move_SAVE(int MouseY) {
 
-	if (false == GAMEMENU_COUNT && EndFlag != 99 || EndFlag == 99) {
+	if (false == GAMEMENU_COUNT || EndFlag == 99) {
 		SAVE_y = (MouseY <= 199) ? 100
 			: (MouseY <= 299) ? 200
 			: (MouseY <= 399) ? 300
