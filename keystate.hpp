@@ -42,6 +42,13 @@ public:
 		return this->flush_update(std::chrono::time_point_cast<default_time_point>(wait));
 	}
 	bool wait_key_change(const default_time_point wait) noexcept;
+	template<
+		typename Rep, typename Period,
+		std::enable_if_t<!std::is_same<std::chrono::time_point<Rep, Period>, default_time_point>{}, std::nullptr_t> = nullptr
+	>
+	bool wait_key_change(std::chrono::time_point<Rep, Period> wait) noexcept {
+		return this->wait_key_change(std::chrono::time_point_cast<default_time_point>(wait));
+	}
 	int operator[](std::size_t n) const noexcept;
 	int at(std::size_t n) const;
 	bool shift() const noexcept;
