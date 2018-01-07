@@ -91,12 +91,12 @@ namespace {
 
 			//選択肢画面でのセーブ処理
 			if (SAVESNAP_CHOICE != 0) {
-				SetDrawScreen(DX_SCREEN_BACK);
+				scoped_screen screen(DX_SCREEN_BACK);
+				//TODO: これはなんなのか突き止める。SAVESNAP_CHOICEってフラグなのかハンドルなのか・・・
 				DrawGraph(0, 0, SAVESNAP_CHOICE, TRUE);
 				SaveDrawScreenToPNG(0, 0, 640, 480, ImagePath, 0);
 				SAVESNAP_CHOICE = 0;
 				*SaveSnapHandle = 0;
-				SetDrawScreen(DX_SCREEN_FRONT);
 			}
 
 			//セーブデータの作成
@@ -180,8 +180,13 @@ namespace {
 	void SAVEDATA_SAVE_LOOP(KeyState& key) {
 
 		//セーブデータ・セーブ画面ループ
-		while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
-
+		using clock = std::chrono::high_resolution_clock;
+		using namespace std::chrono_literals;
+		auto normal_con_f = []() -> bool {
+			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
+		};
+		scoped_screen screen(DX_SCREEN_BACK);
+		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
 
@@ -198,7 +203,7 @@ namespace {
 			SAVEDATA_KEY_MOVE(key);
 
 			//画面クリア処理
-			SCREEN_CLEAR();
+			//SCREEN_CLEAR();
 
 			//セーブデータ１にセーブ
 			if (SAVE_y == save_base_pos_y && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
@@ -323,9 +328,15 @@ namespace {
 
 	//セーブデータ・ロード画面ループ
 	void SAVEDATA_LOAD_LOOP(KeyState& key) {
-		scoped_screen screen(DX_SCREEN_FRONT);
-		while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
-
+		using clock = std::chrono::high_resolution_clock;
+		using namespace std::chrono_literals;
+		auto normal_con_f = []() -> bool {
+			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
+		};
+		scoped_screen screen(DX_SCREEN_BACK);
+		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
+		//scoped_screen screen(DX_SCREEN_FRONT);
+		//while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
 
@@ -444,7 +455,14 @@ namespace {
 	//セーブデータ削除画面ループ
 	void SAVEDATA_DELETE_LOOP(KeyState& key) {
 
-		while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
+		using clock = std::chrono::high_resolution_clock;
+		using namespace std::chrono_literals;
+		auto normal_con_f = []() -> bool {
+			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
+		};
+		scoped_screen screen(DX_SCREEN_BACK);
+		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
+			//while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
@@ -478,8 +496,7 @@ namespace {
 			}
 			if (SAVE_y == (save_base_pos_y * 4) && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				const auto choice = MessageBoxYesNo("戻りますか？", key, KeyState::Executor::flush);
-				using namespace std::chrono_literals;
-				const auto t = std::chrono::high_resolution_clock::now();
+				t = clock::now();
 				if (IDYES == choice) {
 					ClearDrawScreen();
 					//ショートカットキー時の事後処理

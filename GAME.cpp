@@ -1047,8 +1047,13 @@ int GAMEMENU(KeyState& key) {
 		GAME_y = game_menu_base_pos_y;
 
 		//ゲームメニューループ
-		while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
-
+		using clock = std::chrono::high_resolution_clock;
+		using namespace std::chrono_literals;
+		auto normal_con_f = []() -> bool {
+			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
+		};
+		scoped_screen screen(DX_SCREEN_BACK);
+		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
 			//ゲームメニューの描画
 			GAMEMENU_DRAW();
 
@@ -1330,8 +1335,7 @@ namespace {
 
 	//選択肢時のバックログ取得
 	void SCRIPT_OUTPUT_CHOICE_BACKLOG() {
-
-		SetDrawScreen(DX_SCREEN_BACK);
+		scoped_screen screen(DX_SCREEN_BACK);
 
 		//選択肢ループ用描画処理(サウンドノベル風)
 		SCRIPT_OUTPUT_CHOICE_LOOP_SOUNDNOVEL();
@@ -1353,8 +1357,6 @@ namespace {
 		DrawPointX = 0;
 		background.reset();
 		charactor.reset();
-
-		SetDrawScreen(DX_SCREEN_FRONT);
 	}
 
 	//選択肢ループ
@@ -1362,9 +1364,13 @@ namespace {
 
 		//選択肢ファイルの読み込み(描画用
 		SCRIPT_OUTPUT_CHOICE_READ();
-
-		while (ProcessMessage() == 0 && key.update() && EndFlag != 99 && EndFlag != 99999 && SAVE_CHOICE != 0) {
-
+		using clock = std::chrono::high_resolution_clock;
+		using namespace std::chrono_literals;
+		auto normal_con_f = []() -> bool {
+			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
+		};
+		scoped_screen screen(DX_SCREEN_BACK);
+		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && EndFlag != 99 && EndFlag != 99999 && SAVE_CHOICE != 0; t = clock::now()) {
 			//選択肢ループ用描画処理
 			SCRIPT_OUTPUT_CHOICE_LOOP_DRAW();
 
