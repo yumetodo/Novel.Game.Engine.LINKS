@@ -75,7 +75,6 @@
     <ProjectGuid>{4406CD72-6E10-4A84-8225-85C67F86E4CA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LINKS</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="vcxcompat.props" />
