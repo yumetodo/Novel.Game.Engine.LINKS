@@ -18,17 +18,23 @@ namespace {
 		typename OnPushdFunc, typename OnNotPushdFunc,
 		std::enable_if_t<
 			std::is_same<KeyState::buf_elem_type, decltype(std::declval<OnPushdFunc>()(std::declval<KeyState::buf_elem_type>()))>::value
-			&& std::is_same<KeyState::buf_elem_type, decltype(std::declval<OnNotPushdFunc>()(std::declval<KeyState::buf_elem_type>()))>::value,
+			&& std::is_same<KeyState::buf_elem_type, decltype(std::declval<OnNotPushdFunc>()(std::declval<KeyState::buf_elem_type>(), std::declval<bool>()))>::value,
 			std::nullptr_t
 		> = nullptr
 	>
-	bool update_keystatebuf(std::array<KeyState::buf_elem_type, KeyState::keybufsize>& keystatebuf, OnPushdFunc&& on_pushd, OnNotPushdFunc&& on_not_pushd) {
+	bool update_keystatebuf(std::array<KeyState::buf_elem_type, KeyState::keybufsize>& keystatebuf, std::bitset<KeyState::keybufsize>& is_prev_key_left,OnPushdFunc&& on_pushd, OnNotPushdFunc&& on_not_pushd) {
 		char buf[KeyState::keybufsize];
 		auto re = GetHitKeyStateAll(buf);
 		if (0 != re) return false;
 		for (size_t i = 0; i < KeyState::keybufsize; ++i) {
-			if (buf[i]) keystatebuf[i] = on_pushd(keystatebuf[i]);
-			else keystatebuf[i] = on_not_pushd(keystatebuf[i]);
+			if (buf[i]) {
+				keystatebuf[i] = on_pushd(keystatebuf[i]);
+				is_prev_key_left[i] = false;
+			}
+			else {
+				keystatebuf[i] = on_not_pushd(keystatebuf[i], is_prev_key_left[i]);
+				is_prev_key_left[i] = true;
+			}
 		}
 		return true;
 	}
@@ -36,9 +42,9 @@ namespace {
 
 bool KeyState::update() noexcept {
 	return (1 == *this->mouse_key_move_) ? true : update_keystatebuf(
-		this->keystatebuf,
+		this->keystatebuf, this->is_prev_key_left,
 		[](KeyState::buf_elem_type n) { return (KeyState::buf_elem_limit::max() != n) ? n + 1 : n; },
-		[](KeyState::buf_elem_type) -> KeyState::buf_elem_type { return 0; }
+		[](KeyState::buf_elem_type, bool) -> KeyState::buf_elem_type { return 0; }
 	);
 }
 
@@ -87,6 +93,7 @@ bool KeyState::flush(default_time_point wait) noexcept {
 void KeyState::clear_buf() noexcept
 {
 	this->keystatebuf.fill(0);
+	this->is_prev_key_left.reset();
 }
 
 bool KeyState::flush_stresam(const default_time_point timeout) noexcept
@@ -118,9 +125,10 @@ bool KeyState::wait_key_change(const default_time_point wait) noexcept
 	this->clear_buf();
 	bool return_not_by_time_check = true;
 	while(true == (return_not_by_time_check = (clock::now() < wait)) && update_keystatebuf(
-		this->keystatebuf,
+		this->keystatebuf, this->is_prev_key_left,
 		[](KeyState::buf_elem_type n) { return std::max<KeyState::buf_elem_type>(1, n); },
-		[](KeyState::buf_elem_type n) { return n; }
+		//キー離した次のループだけは無視
+		[](KeyState::buf_elem_type n, bool is_key_left) { return (is_key_left) ? n : 0; }
 	));
 	return !return_not_by_time_check;
 }

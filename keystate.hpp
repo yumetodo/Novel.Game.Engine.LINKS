@@ -3,6 +3,7 @@
 #include <functional>
 #include <chrono>
 #include <limits>
+#include <bitset>
 
 class KeyState
 {
@@ -13,7 +14,7 @@ public:
 	using default_time_point = std::chrono::time_point<default_clock>;
 public:
 	KeyState() = delete;
-	KeyState(const std::int32_t* mouse_key_move) : mouse_key_move_(mouse_key_move), keystatebuf() {}
+	KeyState(const std::int32_t* mouse_key_move) : mouse_key_move_(mouse_key_move), keystatebuf(), is_prev_key_left() {}
 	KeyState(const KeyState&) = delete;
 	KeyState(KeyState&&) = delete;
 	KeyState& operator=(const KeyState&) = delete;
@@ -78,6 +79,7 @@ private:
 	//マウス操作とキー操作の情報 true/false
 	const std::int32_t* mouse_key_move_;
 	std::array<buf_elem_type, keybufsize> keystatebuf;
+	std::bitset<keybufsize> is_prev_key_left;
 };
 template<typename ExecutorType> class KeyStateExecutorObj;
 template<> class KeyStateExecutorObj<KeyState::Executor::flush_tag> {
