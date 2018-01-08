@@ -20,7 +20,8 @@ void SAVESNAP();
 void SCRIPT_OUTPUT_CHOICE_LOOP_SAVESNAP();
 void Mouse_Move_SAVE(int MouseY);
 
-void setSaveSnapChoice(bool b);
+void NotifySaveSnap();
+void NotifyDisableSaveSnap();
 
 //通常セーブデータ
 struct alignas(4) SaveData_t {

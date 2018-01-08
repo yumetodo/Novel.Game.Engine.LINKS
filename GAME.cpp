@@ -1308,7 +1308,7 @@ namespace {
 	void SCRIPT_OUTPUT_CHOICE_BRANCH_UP() {
 		if (1 <= EndFlag && EndFlag <= 7) {
 			SAVE_CHOICE = 0;
-			setSaveSnapChoice(false);
+			NotifyDisableSaveSnap();
 			EndFlag *= 2;
 		}
 	}
@@ -1317,7 +1317,7 @@ namespace {
 	void SCRIPT_OUTPUT_CHOICE_BRANCH_DOWN() {
 		if (1 <= EndFlag && EndFlag <= 7) {
 			SAVE_CHOICE = 0;
-			setSaveSnapChoice(false);
+			NotifyDisableSaveSnap();
 			EndFlag = EndFlag * 2 + 1;
 		}
 	}
@@ -1431,7 +1431,7 @@ namespace {
 		if (EndFlag == 1 || EndFlag == 2 || EndFlag == 3 || EndFlag == 4 || EndFlag == 5 || EndFlag == 6 || EndFlag == 7) {
 
 			SAVE_CHOICE = 1;
-			setSaveSnapChoice(true);
+			NotifySaveSnap();
 
 			//選択肢ループ
 			SCRIPT_OUTPUT_CHOICE_LOOP(key);

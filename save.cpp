@@ -18,14 +18,12 @@
 
 int SAVE_CHOICE = 0;
 static int SAVESNAP1, SAVESNAP2, SAVESNAP3, SAVETITLE;
-static int SAVESNAP_HANDLE1 = 0, SAVESNAP_HANDLE2 = 0, SAVESNAP_HANDLE3 = 0, SAVESNAP_CHOICE = 0;
-
+static int SAVESNAP_HANDLE1 = 0, SAVESNAP_HANDLE2 = 0, SAVESNAP_HANDLE3 = 0, SAVESNAP_HANDLE = 0;
+static bool SAVESNAP_CHOICE = false;
 static int SAVE_y = save_base_pos_y;
 
-void setSaveSnapChoice(bool b) {
-	SAVESNAP_CHOICE = b;
-}
-
+void NotifySaveSnap() { SAVESNAP_CHOICE = true; }
+void NotifyDisableSaveSnap() { SAVESNAP_CHOICE = false; }
 namespace {
 	//セーブデータ一覧描画
 	void SAVEDATA_DRAW() {
@@ -90,12 +88,11 @@ namespace {
 			*SaveSnapHandle = 1;
 
 			//選択肢画面でのセーブ処理
-			if (SAVESNAP_CHOICE != 0) {
+			if (SAVESNAP_CHOICE) {
 				scoped_screen screen(DX_SCREEN_BACK);
-				//TODO: これはなんなのか突き止める。SAVESNAP_CHOICEってフラグなのかハンドルなのか・・・
-				DrawGraph(0, 0, SAVESNAP_CHOICE, TRUE);
+				DrawGraph(0, 0, SAVESNAP_HANDLE, TRUE);
 				SaveDrawScreenToPNG(0, 0, 640, 480, ImagePath, 0);
-				SAVESNAP_CHOICE = 0;
+				SAVESNAP_CHOICE = false;
 				*SaveSnapHandle = 0;
 			}
 
@@ -549,11 +546,9 @@ void SAVESNAP() {
 //セーブデータ用スクリーンショット取得(選択肢画面)
 void SCRIPT_OUTPUT_CHOICE_LOOP_SAVESNAP() {
 
-	if (SAVESNAP_CHOICE == 1) {
-
+	if (SAVESNAP_CHOICE) {
 		SaveDrawScreenToPNG(0, 0, 640, 480, "DATA/SAVE/SAVESNAP_CHOICE.png", 0);
-
-		SAVESNAP_CHOICE = LoadGraph("DATA/SAVE/SAVESNAP_CHOICE.png", 0);
+		SAVESNAP_HANDLE = LoadGraph("DATA/SAVE/SAVESNAP_CHOICE.png", 0);
 	}
 }
 
