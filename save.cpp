@@ -198,10 +198,6 @@ namespace {
 
 			//キー操作関連
 			SAVEDATA_KEY_MOVE(key);
-
-			//画面クリア処理
-			//SCREEN_CLEAR();
-
 			//セーブデータ１にセーブ
 			if (SAVE_y == save_base_pos_y && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ１にセーブ
@@ -332,8 +328,6 @@ namespace {
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
 		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
-		//scoped_screen screen(DX_SCREEN_FRONT);
-		//while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
 
@@ -348,10 +342,6 @@ namespace {
 
 			//セーブ画面(キー操作)
 			SAVEDATA_KEY_MOVE(key);
-
-			//画面クリア処理
-			SCREEN_CLEAR();
-
 			//セーブデータ１のロード
 			if (SAVE_y == save_base_pos_y && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 				//セーブデータ１をロード
@@ -475,10 +465,6 @@ namespace {
 
 			//キー操作関連
 			SAVEDATA_KEY_MOVE(key);
-
-			//画面クリア処理
-			SCREEN_CLEAR();
-
 			if (SAVE_y == save_base_pos_y && (key.enter() || (GetMouseInput() & MOUSE_INPUT_LEFT) != 0)) {
 				//セーブデータ1削除処理
 				SAVEDATA_1_DELETE(key);

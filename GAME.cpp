@@ -1065,10 +1065,6 @@ int GAMEMENU(KeyState& key) {
 
 			//ゲームメニュー(キー操作)
 			GAMEMENU_KEY_MOVE(key);
-
-			//画面クリア処理
-			SCREEN_CLEAR();
-
 			//各ゲームメニュー選択時処理
 			GAMEMENU_CHOICE(key);
 		}
@@ -1391,9 +1387,6 @@ namespace {
 
 			//キー操作関連
 			SCRIPT_OUTPUT_CHOICE_LOOP_KEY_MOVE(key);
-
-			//画面クリア処理
-			SCREEN_CLEAR();
 			if (TitleMenuPosY == choise_pos_y[0] && (key.enter() || ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0))) {
 
 				incrementBackLogCount();
