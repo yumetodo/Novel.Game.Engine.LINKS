@@ -894,7 +894,7 @@ void CONFIG(KeyState& key) {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && Config == true; t = clock::now()) {
+		for (auto t = clock::now(); Config == true && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
 
 			GAME_MENU_CURSOR(Cr, GAME_y);
 
@@ -1053,7 +1053,7 @@ int GAMEMENU(KeyState& key) {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
+		for (auto t = clock::now(); false == GAMEMENU_COUNT && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//ゲームメニューの描画
 			GAMEMENU_DRAW();
 
@@ -1366,7 +1366,7 @@ namespace {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && EndFlag != 99 && EndFlag != 99999 && SAVE_CHOICE != 0; t = clock::now()) {
+		for (auto t = clock::now(); EndFlag != 99 && EndFlag != 99999 && SAVE_CHOICE != 0 && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//選択肢ループ用描画処理
 			SCRIPT_OUTPUT_CHOICE_LOOP_DRAW();
 

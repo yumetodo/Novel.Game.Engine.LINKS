@@ -130,7 +130,7 @@ void TITLE_MENU(KeyState& key) {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && EndFlag == 99; t = clock::now()) {
+		for (auto t = clock::now(); EndFlag == 99 && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//タイトル表示
 			DrawGraph(0, 0, TITLE, TRUE);
 

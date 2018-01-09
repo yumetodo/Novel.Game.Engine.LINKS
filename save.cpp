@@ -183,7 +183,7 @@ namespace {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
+		for (auto t = clock::now(); false == GAMEMENU_COUNT && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
 
@@ -327,7 +327,7 @@ namespace {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
+		for (auto t = clock::now(); false == GAMEMENU_COUNT && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
 
@@ -448,7 +448,7 @@ namespace {
 			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
 		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); normal_con_f() && key.wait_key_change(t + 300ms) && false == GAMEMENU_COUNT; t = clock::now()) {
+		for (auto t = clock::now(); false == GAMEMENU_COUNT && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 
 			//背景描画
