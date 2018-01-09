@@ -71,6 +71,8 @@ int MessageBoxOk(LPCTSTR lpText, KeyState& key, ExectorType, std::chrono::durati
 //画面クリア処理関数
 void SCREEN_CLEAR() noexcept;
 
+bool DrawLoopController() noexcept;
+
 constexpr bool isdigit(char c) noexcept { return '0' <= c && c <= '9'; }
 constexpr unsigned int ctoui(char c) noexcept { return c - '0'; }
 #endif

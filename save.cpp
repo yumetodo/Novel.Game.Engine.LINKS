@@ -179,11 +179,8 @@ namespace {
 		//セーブデータ・セーブ画面ループ
 		using clock = std::chrono::high_resolution_clock;
 		using namespace std::chrono_literals;
-		auto normal_con_f = []() -> bool {
-			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
-		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); false == GAMEMENU_COUNT && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
+		for (auto t = clock::now(); false == GAMEMENU_COUNT && DrawLoopController() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
 
@@ -323,11 +320,8 @@ namespace {
 	void SAVEDATA_LOAD_LOOP(KeyState& key) {
 		using clock = std::chrono::high_resolution_clock;
 		using namespace std::chrono_literals;
-		auto normal_con_f = []() -> bool {
-			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
-		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); false == GAMEMENU_COUNT && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
+		for (auto t = clock::now(); false == GAMEMENU_COUNT && DrawLoopController() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//背景描画
 			DrawGraph(0, 0, SAVETITLE, TRUE);
 
@@ -444,11 +438,8 @@ namespace {
 
 		using clock = std::chrono::high_resolution_clock;
 		using namespace std::chrono_literals;
-		auto normal_con_f = []() -> bool {
-			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
-		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); false == GAMEMENU_COUNT && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
+		for (auto t = clock::now(); false == GAMEMENU_COUNT && DrawLoopController() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//while (ProcessMessage() == 0 && key.update() && false == GAMEMENU_COUNT) {
 
 			//背景描画

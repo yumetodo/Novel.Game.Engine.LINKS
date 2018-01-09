@@ -34,3 +34,7 @@ void SCREEN_CLEAR() noexcept {
 	ClearDrawScreen();
 	SetDrawScreen(DX_SCREEN_FRONT);
 }
+
+bool DrawLoopController() noexcept {
+	return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
+}

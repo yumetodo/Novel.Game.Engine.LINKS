@@ -126,11 +126,8 @@ void TITLE_MENU(KeyState& key) {
 		GAMEMENU_COUNT = false;
 		using clock = std::chrono::high_resolution_clock;
 		using namespace std::chrono_literals;
-		auto normal_con_f = []() -> bool {
-			return -1 != ProcessMessage() && 0 == ScreenFlip() && 0 == ClearDrawScreen();
-		};
 		scoped_screen screen(DX_SCREEN_BACK);
-		for (auto t = clock::now(); EndFlag == 99 && normal_con_f() && key.wait_key_change(t + 300ms); t = clock::now()) {
+		for (auto t = clock::now(); EndFlag == 99 && DrawLoopController() && key.wait_key_change(t + 300ms); t = clock::now()) {
 			//タイトル表示
 			DrawGraph(0, 0, TITLE, TRUE);
 
